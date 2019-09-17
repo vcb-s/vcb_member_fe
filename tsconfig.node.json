@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "downlevelIteration": true,
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "target": "es6"
+  }
+}
