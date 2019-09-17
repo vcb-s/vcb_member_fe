@@ -18,7 +18,10 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "@local/*": ["./*"]
+    }
   },
   "include": [
     "src/**/*.ts",
@@ -26,6 +29,6 @@
     "script/**/*.ts",
     "script/**/*.tsx",
     "config/**/*.ts",
-    "config/**/*.tsx"
+    "config/**/*.tsx", "index.d.ts"
   ]
 }

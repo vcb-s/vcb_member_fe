@@ -17,14 +17,17 @@
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-router-dom": "^5.0.1",
+    "toml": "^3.0.0",
+    "toml-require": "^1.2.0",
     "ts-node": "^8.4.1",
+    "tsconfig-paths": "^3.9.0",
     "typescript": "^3.6.3",
     "webpack": "^4.39.3",
     "webpack-dev-server": "^3.8.0"
   },
   "scripts": {
-    "start": "ts-node --project tsconfig.node.json script/dev.ts",
-    "build": "ts-node --project tsconfig.node.json script/build.ts",
+    "start": "ts-node --project tsconfig.node.json -r tsconfig-paths/register script/dev.ts",
+    "build": "ts-node --project tsconfig.node.json -r tsconfig-paths/register script/build.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

@@ -1,5 +1,5 @@
 import webpack from 'webpack'
-import webpackConf from '../conf/webpck.conf.prod'
+import webpackConf from '@local/conf/webpck.conf.prod'
 
 webpack({
   // Configuration Object

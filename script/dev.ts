@@ -1,8 +1,16 @@
 // import webpack from 'webpack'
 import * as webpack from 'webpack'
+import toml from 'toml'
 import * as WebpackDevServer from 'webpack-dev-server'
 
-import webpackConf from '../conf/webpck.conf'
+import webpackConf from '@local/conf/webpck.conf'
+
+require('toml-require').install({ toml })
+const conf = require('@local/config.toml')
+
+console.log('------------------')
+console.log('what is conf', conf.owner)
+console.log('------------------')
 
 const HOST = 'localhost'
 
