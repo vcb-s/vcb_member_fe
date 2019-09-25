@@ -1,26 +1,23 @@
-// import webpack from 'webpack'
 import * as webpack from 'webpack'
-import toml from 'toml'
 import * as WebpackDevServer from 'webpack-dev-server'
+import conf from '@local/script/conf/webpck.conf'
+import envLoader from './tools/envLoader'
 
-import webpackConf from '@local/conf/webpck.conf'
+const env = envLoader()
 
-require('toml-require').install({ toml })
-const conf = require('@local/config.toml')
+const HOST = env.HOST || 'localhost'
 
-console.log('------------------')
-console.log('what is conf', conf.owner)
-console.log('------------------')
+for (const envKey of Object.keys(env)) {
+  process.env[envKey] = env[envKey]
+}
 
-const HOST = 'localhost'
 
-const compiler = webpack(webpackConf)
+const compiler = webpack(conf)
 const serverConfig: WebpackDevServer.Configuration = {
   disableHostCheck: true,
   compress: true,
-  clientLogLevel: 'none',
   hot: true,
-  quiet: false,
+  quiet: true,
   headers: {
     'access-control-allow-origin': '*',
   },
