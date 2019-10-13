@@ -1,6 +1,6 @@
 import * as webpack from 'webpack'
 import * as WebpackDevServer from 'webpack-dev-server'
-import conf from '@local/script/conf/webpck.conf'
+import conf from '@local/script/conf'
 import envLoader from './tools/envLoader'
 
 const env = envLoader()

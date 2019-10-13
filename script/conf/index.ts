@@ -4,8 +4,7 @@ import * as ConfigCreator from 'webpack-chain'
 
 import envLoader,{ ROOT } from '../tools/envLoader'
 import console from '../tools/console'
-import loadersImport from './loaders'
-import pluginsImport from './plugins'
+import loadConfig from './sub_conf'
 
 const env = envLoader()
 const { mode } = env
@@ -17,8 +16,6 @@ config.mode(mode)
 /** 入口 */
 const preDefineEntryPath = [
   resolve(ROOT, './src/index.ts'),
-  resolve(ROOT, './src/index.js'),
-  // resolve(ROOT, './src/index.mjs'),
 ]
 for (const filePath of preDefineEntryPath) {
   try {
@@ -53,8 +50,6 @@ if (!config.entry('index').values().length) {
 }
 
 /** 添加loader */
-loadersImport(config)
-/** 添加plugin */
-pluginsImport(config)
+loadConfig(config)
 
 export default config.toConfig()

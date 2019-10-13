@@ -1,5 +1,5 @@
 import * as webpack from 'webpack'
-import webpackConf from '@local/script/conf/webpck.conf'
+import webpackConf from '@local/script/conf'
 
 import console from './tools/console'
 
