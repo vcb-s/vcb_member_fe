@@ -1,6 +1,9 @@
 import * as ConfigCreator from 'webpack-chain'
 import * as HTMLWebpackPlugin from 'html-webpack-plugin'
+import ejsLoader from 'ejs-plain-loader'
 import HTMLResourceIntPlugin from 'webpack-subresource-integrity'
+
+import { resolve } from 'path'
 
 import envLoader from '../../../tools/envLoader'
 
@@ -29,7 +32,11 @@ export default function (config: ConfigCreator) {
       }
     )
     .plugin('html')
-      .use(HTMLWebpackPlugin)
+      .use(HTMLWebpackPlugin, [
+        {
+          template: resolve(__dirname, './default.ejs')
+        }
+      ])
       .end()
 
 }
