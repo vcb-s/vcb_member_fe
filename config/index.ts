@@ -1,13 +1,18 @@
-import { statSync } from 'fs'
+import { statSync, writeFileSync } from 'fs'
 import { resolve } from 'path'
 import * as ConfigCreator from 'webpack-chain'
 
-import envLoader,{ ROOT } from '../tools/envLoader'
-import console from '../tools/console'
-import loadConfig from './sub_conf'
+import envLoader, { ROOT } from '../script/utils/envLoader'
+import console from '../script/utils/console'
 
-const env = envLoader()
-const { mode } = env
+import babelLoader from './babel'
+import tsLoader from './ts'
+import analysisPlugin from './analysis'
+import cleanPlugin from './clean'
+import htmlPlugin from './html'
+
+const env = envLoader({ focus: true })
+const { mode, dumpConfigOnly } = env
 
 const config = new ConfigCreator()
 
@@ -50,6 +55,19 @@ if (!config.entry('index').values().length) {
 }
 
 /** 添加loader */
-loadConfig(config)
+analysisPlugin(config)
+babelLoader(config)
+cleanPlugin(config)
+htmlPlugin(config)
+tsLoader(config)
+
+if (dumpConfigOnly) {
+  console.log('dumping config file ...')
+  writeFileSync(resolve(ROOT, './debugConfig.js'), config.toString(), { encoding: 'utf8' })
+  console.log('end')
+  process.exit(0)
+}
+
+console.log('what is env', JSON.stringify(env))
 
 export default config.toConfig()

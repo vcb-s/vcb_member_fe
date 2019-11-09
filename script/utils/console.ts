@@ -1,4 +1,4 @@
-import chalk from 'chalk'
+import * as chalk from 'chalk'
 
 export const log = (...args: any[]) => {
   console.log(chalk.green(...args))

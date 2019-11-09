@@ -1,7 +1,7 @@
 import * as webpack from 'webpack'
-import webpackConf from '@local/script/conf'
+import webpackConf from '@/config'
 
-import console from './tools/console'
+import console from './utils/console'
 
 webpack(
   webpackConf,

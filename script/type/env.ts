@@ -1,10 +1,9 @@
 namespace Type {
-  export interface envLoaderParam {
-    focus?: boolean
-  }
   export interface env {
     mode?: 'development'|'production'
-    HOST?: string
+    devServerHost?: string
+    devServerPort?: number
+    dumpConfigOnly?: 1|0
   }
 }
 

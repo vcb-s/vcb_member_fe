@@ -1,11 +1,10 @@
 import * as ConfigCreator from 'webpack-chain'
 import * as HTMLWebpackPlugin from 'html-webpack-plugin'
-import ejsLoader from 'ejs-plain-loader'
 import HTMLResourceIntPlugin from 'webpack-subresource-integrity'
 
 import { resolve } from 'path'
 
-import envLoader from '../../../tools/envLoader'
+import envLoader from '../../script/utils/envLoader'
 
 const env = envLoader()
 const { mode } = env
@@ -14,10 +13,9 @@ export default function (config: ConfigCreator) {
   config
   .module
     .rule('ejs')
-    .test(/\.ejs$/)
-      .use('ejs')
-        .loader('ejs-loader')
-        .end()
+      .test(/\.ejs$/)
+        .use('ejs').loader('html-loader').end()
+        .use('plain-ejs').loader('ejs-plain-loader').end()
       .end()
     .end()
     .when(
