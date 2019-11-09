@@ -63,7 +63,7 @@ tsLoader(config)
 
 if (dumpConfigOnly) {
   console.log('dumping config file ...')
-  writeFileSync(resolve(ROOT, './debugConfig.js'), config.toString(), { encoding: 'utf8' })
+  writeFileSync(resolve(ROOT, './debug/config.js'), config.toString(), { encoding: 'utf8' })
   console.log('end')
   process.exit(0)
 }
