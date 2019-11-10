@@ -50,5 +50,8 @@
   },
   "keywords": [],
   "author": "inori-lover",
-  "license": "GPL-3.0"
+  "license": "GPL-3.0",
+  "dependencies": {
+    "ts-loader": "^6.2.1"
+  }
 }

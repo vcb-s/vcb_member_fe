@@ -1,4 +1,4 @@
-import { statSync, writeFileSync } from 'fs'
+import { statSync, writeFileSync, mkdirSync } from 'fs'
 import { resolve } from 'path'
 import * as ConfigCreator from 'webpack-chain'
 
@@ -63,8 +63,16 @@ tsLoader(config)
 
 if (dumpConfigOnly) {
   console.log('dumping config file ...')
-  writeFileSync(resolve(ROOT, './debug/config.js'), config.toString(), { encoding: 'utf8' })
-  console.log('end')
+  try {
+    const debugDirectoryStat = statSync(resolve(ROOT, './debug'))
+    if (!debugDirectoryStat.isDirectory()) {
+      throw new Error('not a directory')
+    }
+  } catch (e) {
+    mkdirSync(resolve(ROOT, './debug'))
+  }
+  writeFileSync(resolve(ROOT, './debug/config.js'), `module.export = ${config.toString()}`, { encoding: 'utf8' })
+  console.log('done')
   process.exit(0)
 }
 
