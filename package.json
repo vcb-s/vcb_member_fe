@@ -53,7 +53,7 @@
     "start": "ts-node --project tsconfig.node.json -r tsconfig-paths/register script/dev.ts",
     "build": "ts-node --project tsconfig.node.json -r tsconfig-paths/register script/build.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "install": "set HTTPS_PROXY=http://127.0.0.1:1080 && npm ci"
+    "pi": "set HTTPS_PROXY=http://127.0.0.1:1080 && npm ci"
   },
   "keywords": [],
   "author": "inori-lover",
