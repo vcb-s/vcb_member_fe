@@ -6,21 +6,37 @@ export default {
     analysis: 'plugin-analysis',
   },
   loader: {
+    postcss: {
+      require: require.resolve('postcss-loader'),
+      name: 'postcss-loader'
+    },
+    css: {
+      require: require.resolve('css-loader'),
+      name: 'css-loader'
+    },
+    style: {
+      require: require.resolve('style-loader'),
+      name: 'style-loader'
+    },
+    sass: {
+      require: require.resolve('sass-loader'),
+      name: 'sass-loader'
+    },
     babel: {
       require: require.resolve('babel-loader'),
-      name: 'loader-babel'
+      name: 'babel-loader'
     },
     typescript: {
       require: require.resolve('ts-loader'),
-      name: 'loader-typescript'
+      name: 'typescript-loader'
     },
     html: {
       require: require.resolve('html-loader'),
-      name: 'loader-html'
+      name: 'html-loader'
     },
     ejs: {
       require: require.resolve('ejs-plain-loader'),
-      name: 'loader-ejs'
+      name: 'ejs-loader'
     },
   },
 }
