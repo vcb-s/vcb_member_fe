@@ -1,6 +1,7 @@
 import { createAction, createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 import store, { reducerManager } from '~/store'
+import { withPayloadType, PaginationPayload } from '~/utils/types'
 
 const name = '@@pages.index'
 
@@ -16,7 +17,7 @@ export namespace Payloads {
 }
 
 export namespace Actions {
-  export const INIT = createAction<Payloads.INIT>(`${name}/init`)
+  export const INIT = createAction(`${name}/init`, withPayloadType<void>())
 }
 
 const slice = createSlice({
@@ -24,9 +25,7 @@ const slice = createSlice({
   initialState,
   reducers: {},
   extraReducers: build => {
-    build.addCase(Actions.INIT, (state, aciton) => {
-      return state
-    })
+    build.addCase(Actions.INIT, _ => _)
   }
 })
 

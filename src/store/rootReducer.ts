@@ -1,6 +1,5 @@
 import { combineReducers } from '@reduxjs/toolkit'
 
-import { slice } from '~/models/app'
 import { produce } from '~/utils/immer'
 
 function createReducerManager(initialReducers: Parameters<typeof combineReducers>[0]) {
@@ -53,9 +52,5 @@ function createReducerManager(initialReducers: Parameters<typeof combineReducers
 }
 
 export const reducerManager = createReducerManager({
-  [slice.name]: slice.reducer
+  '@@__init': () => ({})
 })
-
-export const rootReducer = reducerManager.reduce
-
-export default rootReducer

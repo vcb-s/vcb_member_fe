@@ -1,6 +1,6 @@
 import produce, { setAutoFreeze } from 'immer'
 
-setAutoFreeze(false)
+// setAutoFreeze(false)
 
 export { produce }
 export default produce

@@ -1,11 +1,15 @@
 import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit'
 
-import reducer, { reducerManager } from './root'
 
-export const store = configureStore({
-  reducer,
-  middleware: getDefaultMiddleware()
+import { reducerManager } from './rootReducer'
+
+const store = configureStore({
+  reducer: reducerManager.reduce,
+  middleware: [
+    ...getDefaultMiddleware(),
+  ]
 })
 
+export { store }
 export { reducerManager }
 export default store
