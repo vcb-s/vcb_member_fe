@@ -1,6 +1,6 @@
 import React from 'react'
 import { Provider } from 'react-redux'
-import { HashRouter } from 'react-router-dom'
+import { BrowserRouter as Router } from 'react-router-dom'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import 'typeface-roboto'
 
@@ -14,9 +14,9 @@ export default class Root extends React.PureComponent {
       <Provider store={store}>
         <CssBaseline />
 
-        <HashRouter>
+        <Router>
           <Routes />
-        </HashRouter>
+        </Router>
       </Provider>
     )
   }
