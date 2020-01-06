@@ -21,10 +21,7 @@ const Toast: NamedExoticComponent<Props> = React.memo(props => {
       key={data.key}
       open={!!data.content}
       onClose={handleClose}
-      ContentProps={{
-        'aria-describedby': 'message-id',
-      }}
-      message={<span id="message-id">I love snacks</span>}
+      message={<span key={data.key} id={data.id}>{data.content}</span>}
     />
   )
 })
