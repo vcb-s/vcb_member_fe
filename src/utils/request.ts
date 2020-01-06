@@ -1,7 +1,7 @@
 import axios, { Method, AxiosResponse, AxiosPromise } from 'axios'
 
 import { token } from './token'
-import { PaginationParam, ResponseData, UserCard } from './types'
+import { PaginationParam, ResponseData, UserCard, Group } from './types'
 
 const fetch = axios.create({
   baseURL: 'http://localhost/vcbs_member_api/',
@@ -59,6 +59,17 @@ namespace request {
       return ajax({
         url: '/user/list',
         data: data
+      })
+    }
+  }
+  export namespace group {
+    export type ReadResponse = ResponseData.Ok<{
+      res: Group.ItemInResponse[]
+      total: number
+    }>
+    export const read = (): AxiosPromise<ReadResponse> => {
+      return ajax({
+        url: '/group/list',
       })
     }
   }

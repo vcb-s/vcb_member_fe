@@ -56,7 +56,7 @@ export namespace Group {
     key: string
   }
 
-  export type List = CommonList<Item>
+  export type List = Omit<CommonList<Item>, 'pagination'>
 }
 
 export namespace UserCard {
