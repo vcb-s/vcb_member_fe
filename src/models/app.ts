@@ -122,7 +122,8 @@ export const slice = createSlice({
           const result: UserCard.Item = {
             ...user,
             key: user.id,
-            group: user.group.split(',').map(id => groupMap.get(id) || null).filter(_ => _)
+            group: user.group.split(',').map(id => groupMap.get(id) || null).filter(_ => _),
+            avast: `https://cache.cswsadlab.com/vcbs_member/uploads/${user.avast}`
           }
           return result
         })

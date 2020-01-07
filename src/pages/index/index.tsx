@@ -1,12 +1,26 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 
-export default React.memo(function IndexPage () {
-  const appState = useSelector(_ => _)
+import WaterFall from '~/components/waterfall/async'
+import Footer from '~/components/footer/async'
+// import GroupSwitcher from '~/components/group_switcher/async'
 
-  console.log('what is state', appState)
+import { slice as globalSlice, State as GlobalState } from '~/models/app'
+
+import loadingIcon from '~/assets/loading.svg'
+
+import './index.scss'
+
+export default React.memo(function IndexPage () {
+  const pageState: GlobalState = useSelector(_ => _[globalSlice.name])
+  const { users } = pageState
 
   return (
-    <>hello world</>
+    <div className='modules_member_index'>
+      <div className='modules_member_index_title'>VCB-Studio 社员一览</div>
+      <WaterFall data={users.data} />
+      <Footer hide={users.loading} />
+      {/* {group.length ? <GroupSwitcher menuItem={group} onChange={groupChangeHandle} /> : null} */}
+    </div>
   )
 })

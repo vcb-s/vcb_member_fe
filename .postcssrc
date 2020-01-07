@@ -1,9 +1,9 @@
 {
-  "modules": true,
+  "modules": false,
   "plugins": {
     "autoprefixer": {
       "remove": false
     },
-    "postcss-px-to-viewport": {}
+    // "postcss-px-to-viewport": {}
   }
 }

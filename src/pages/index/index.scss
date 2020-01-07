@@ -1,0 +1,35 @@
+.modules_member_index {
+  background-color: #eee;
+  padding-top: 60px;
+  min-height: 100%;
+  // padding-bottom: 20px;
+  box-sizing: border-box;
+  .modules_member_index_title {
+    text-align: center;
+    line-height: 1;
+    margin-bottom: 40px;
+    font-size: 32px;
+    font-weight: 700;
+    color: #262626;
+  }
+  .fixed_in_screen {
+    display: block;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 24px;
+    height: 30px;
+    object-fit: contain;
+    object-position: center;
+  }
+  .relative_center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 24px;
+    height: 30px;
+    object-fit: contain;
+    object-position: center;
+    margin-top: 20px;
+  }
+}
