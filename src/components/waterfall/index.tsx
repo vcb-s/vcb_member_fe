@@ -15,6 +15,7 @@ type WaterFallListItem = FC<WaterFallListItemProps>
 const WaterFallListItem: WaterFallListItem = ({ data, className, onResize }) => {
   const [show, setShow] = useState(false)
   const [ref, inView] = useInView()
+  const [height, setHeight] = useState('0px')
 
   useEffect(() => {
     if (inView && !show) {
@@ -23,6 +24,7 @@ const WaterFallListItem: WaterFallListItem = ({ data, className, onResize }) => 
   }, [inView])
 
   const imgLoadedHandle = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    setHeight('auto')
     onResize && onResize(e)
   }
   const errorHandle = () => {
@@ -35,7 +37,7 @@ const WaterFallListItem: WaterFallListItem = ({ data, className, onResize }) => 
     <div className={`com_waterfall_item ${className} ${ data.retired ? 'retired' : 'not_retired' }`} ref={ ref }>
       <div className='com_waterfall_item_avast'>
         {/* decoding=async 会触发一次chrome内置的lazy逻辑，导致快速滚动时会出现img的图片请求会出现瞬间被cancel的现象 */}
-        <img src={show ? data.avast : undefined} onLoad={imgLoadedHandle} onError={errorHandle} />
+        <img src={show ? data.avast : undefined} onLoad={imgLoadedHandle} onError={errorHandle} style={{ height }} />
       </div>
       <div className='com_waterfall_item_text_meta'>
         <div className='com_waterfall_item_text_nickname'>{ data.nickname }</div>
