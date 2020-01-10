@@ -1,5 +1,7 @@
+import produce from 'immer'
 import { createAction, createSlice } from '@reduxjs/toolkit'
 
+import { webpDetect } from '~/utils/webpDetect'
 import { request, strictCheck } from '~/utils/request'
 import { withPayloadType, PaginationPayload, Pagination, UserCard, Group } from '~/utils/types'
 import { sagasCreator } from '~/utils/sagasCreator'
@@ -81,12 +83,30 @@ const sagas = sagasCreator(builder => {
       const { users, group } = getCurrentState()
       const { page, pageSize = users.pagination.pageSize } = payload
       try {
+
         if (!group.data.length) {
           await sagas(Actions.getGroup.fetch())
         }
         const { data } = strictCheck(await request.userList.read({ page, pageSize }))
+        let list = data.res
+        try {
+          await webpDetect
+          list = produce(list, draft => {
+            draft.forEach(user => {
+              if (/[\.(jpg)|(png)]$/.test(user.avast)) {
+                user.avast = `${user.avast.replace(/(.+)\..+?$/, '$1')}@600.webp`
+              } else {
+                user.avast = `${user.avast.replace(/^(.+)(\..+?)$/, '$1@600$2')}`
+              }
+
+              user.avast = `https://cache.cswsadlab.com/vcbs_member/uploads/${user.avast}`
+            })
+          })
+        } catch (e) {
+          // 不支持webp，静默失败
+        }
         store.dispatch(Actions.getUserlist.success({
-          data: data.res,
+          data: list,
           pagination: { page, pageSize, total: data.total }
         }))
       } catch (e) {
@@ -123,8 +143,8 @@ export const slice = createSlice({
             ...user,
             key: user.id,
             group: user.group.split(',').map(id => groupMap.get(id) || null).filter(_ => _),
-            avast: `https://cache.cswsadlab.com/vcbs_member/uploads/${user.avast}`
           }
+
           return result
         })
 
