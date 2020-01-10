@@ -39,22 +39,25 @@ export namespace Payloads {
       data: UserCard.ItemInResponse[]
       pagination: Pagination
     }
+    export type loading = boolean
   }
   export namespace getGroup {
     export interface success {
       data: Group.ItemInResponse[]
     }
+    export type loading = boolean
   }
 }
 
 export namespace Actions {
   export const INIT = createAction(`${name}/init`, withPayloadType<void>())
 
-  export const load = createAction(`${name}/init`, withPayloadType<void>())
+  export const initDataLoad = createAction(`${name}/init`, withPayloadType<void>())
   export namespace getUserlist {
     export const fetch = createAction(`${name}/getUserlist`, withPayloadType<PaginationPayload>())
     export const success = createAction(`${name}/getUserlistSuccess`, withPayloadType<Payloads.getUserlist.success>())
     // export const fail = createAction(`${name}/getUserlistFail`, withPayloadType<PaginationPayload>())
+    export const loading = createAction(`${name}/getUserlistLoading`, withPayloadType<Payloads.getUserlist.loading>())
 
     export const reset = createAction(`${name}/getUserlistReset`, withPayloadType<PaginationPayload>())
   }
@@ -62,6 +65,7 @@ export namespace Actions {
     export const fetch = createAction(`${name}/getGroup`, withPayloadType<void>())
     export const success = createAction(`${name}/getGroupSuccess`, withPayloadType<Payloads.getGroup.success>())
     // export const fail = createAction(`${name}/getGroupFail`, withPayloadType<PaginationPayload>())
+    export const loading = createAction(`${name}/getGroupLoading`, withPayloadType<Payloads.getGroup.loading>())
 
     export const reset = createAction(`${name}/getGroupReset`, withPayloadType<PaginationPayload>())
   }
@@ -71,6 +75,8 @@ const sagas = sagasCreator(builder => {
   builder
     .addCase(Actions.getGroup.fetch, async () => {
       try {
+        store.dispatch(Actions.getGroup.loading(true))
+
         const { data } = strictCheck(await request.group.read())
         store.dispatch(Actions.getGroup.success({
           data: data.res,
@@ -78,11 +84,14 @@ const sagas = sagasCreator(builder => {
       } catch (e) {
         toast.show({ content: e.message })
       }
+
+      store.dispatch(Actions.getGroup.loading(false))
     })
     .addCase(Actions.getUserlist.fetch, async ({ payload }) => {
       const { users, group } = getCurrentState()
       const { page, pageSize = users.pagination.pageSize } = payload
       try {
+        store.dispatch(Actions.getUserlist.loading(true))
 
         if (!group.data.length) {
           await sagas(Actions.getGroup.fetch())
@@ -112,6 +121,8 @@ const sagas = sagasCreator(builder => {
       } catch (e) {
         toast.show({ content: e.message })
       }
+
+      store.dispatch(Actions.getUserlist.loading(false))
     })
 })
 
@@ -149,6 +160,12 @@ export const slice = createSlice({
         })
 
         state.users.pagination = payload.pagination
+      })
+      .addCase(Actions.getUserlist.loading, (state, { payload }) => {
+        state.users.loading = payload
+      })
+      .addCase(Actions.getGroup.loading, (state, { payload }) => {
+        state.users.loading = payload
       })
   }
 })
