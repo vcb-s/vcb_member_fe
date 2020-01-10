@@ -3,10 +3,9 @@ import React, { FC, useState, memo } from 'react'
 import './index.scss'
 
 export interface Props {
-  hide: boolean
+  hide?: boolean
 }
-const Footer: FC<Props> = props => {
-  const { hide } = props
+const Footer: FC<Props> = ({ hide = false }) => {
   if (hide) {
     return null
   }
