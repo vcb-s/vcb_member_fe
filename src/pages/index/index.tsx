@@ -1,17 +1,24 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
+import React, { useCallback } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 
 import WaterFall from '~/components/waterfall/async'
 import Footer from '~/components/footer/async'
 import Loading from '~/components/loading'
+import GroupSelect from '~/components/group_select'
+import { Group } from '~/utils/types'
 
-import { slice as globalSlice, State as GlobalState } from '~/models/app'
+import { slice as globalSlice, State as GlobalState, Actions as GlobalActions, sagas } from '~/models/app'
 
 import './index.scss'
 
 export default React.memo(function IndexPage () {
   const pageState: GlobalState = useSelector(_ => _[globalSlice.name])
-  const { users } = pageState
+  const dispatch = useDispatch()
+  const { users, group, currentGroup } = pageState
+
+  const groupChangeHandle = useCallback((groupID: Group.Item['id']) => {
+    sagas(GlobalActions.getUserlist.fetch({ page: 1, groupID }))
+  }, [dispatch])
 
   return (
     <div className='modules_member_index'>
@@ -19,9 +26,12 @@ export default React.memo(function IndexPage () {
 
       <Loading show={users.loading} />
 
+      <GroupSelect data={group} current={currentGroup} onChange={groupChangeHandle} />
+
+      <div style={{ height: '20px' }} />
+
       <WaterFall data={users.data} />
       <Footer />
-      {/* {group.length ? <GroupSwitcher menuItem={group} onChange={groupChangeHandle} /> : null} */}
     </div>
   )
 })

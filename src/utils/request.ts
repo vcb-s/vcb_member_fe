@@ -51,11 +51,17 @@ const ajax = (param: FetchParam) => {
 
 namespace request {
   export namespace userList {
+    export interface ReadParam extends PaginationParam {
+      group: Group.Item['id']
+      retired?: UserCard.Item['retired']
+      /** @TODO */
+      // sticky?: UserCard.Item['sticky']
+    }
     export type ReadResponse = ResponseData.Ok<{
       res: UserCard.ItemInResponse[]
       total: number
     }>
-    export const read = (data: PaginationParam): AxiosPromise<ReadResponse> => {
+    export const read = (data: ReadParam): AxiosPromise<ReadResponse> => {
       return ajax({
         url: '/user/list',
         data: data

@@ -14,6 +14,7 @@ const name = '@@app'
 export interface State {
   users: UserCard.List
   group: Group.List
+  currentGroup: Group.Item['id']
 }
 const initialState: State = {
   users: {
@@ -29,12 +30,17 @@ const initialState: State = {
     data: [],
     loading: false,
   },
+  /** 约定：1 为管理组 */
+  currentGroup: '1'
 }
 
 const getCurrentState = (): State => store.getState()[name]
 
 export namespace Payloads {
   export namespace getUserlist {
+    export interface fetch extends PaginationPayload {
+      groupID?: Group.Item['id']
+    }
     export interface success {
       data: UserCard.ItemInResponse[]
       pagination: Pagination
@@ -45,6 +51,9 @@ export namespace Payloads {
     export interface success {
       data: Group.ItemInResponse[]
     }
+    export interface changeSelect {
+      groupID: Group.Item['id']
+    }
     export type loading = boolean
   }
 }
@@ -54,7 +63,7 @@ export namespace Actions {
 
   export const initDataLoad = createAction(`${name}/init`, withPayloadType<void>())
   export namespace getUserlist {
-    export const fetch = createAction(`${name}/getUserlist`, withPayloadType<PaginationPayload>())
+    export const fetch = createAction(`${name}/getUserlist`, withPayloadType<Payloads.getUserlist.fetch>())
     export const success = createAction(`${name}/getUserlistSuccess`, withPayloadType<Payloads.getUserlist.success>())
     // export const fail = createAction(`${name}/getUserlistFail`, withPayloadType<PaginationPayload>())
     export const loading = createAction(`${name}/getUserlistLoading`, withPayloadType<Payloads.getUserlist.loading>())
@@ -67,6 +76,8 @@ export namespace Actions {
     // export const fail = createAction(`${name}/getGroupFail`, withPayloadType<PaginationPayload>())
     export const loading = createAction(`${name}/getGroupLoading`, withPayloadType<Payloads.getGroup.loading>())
 
+    export const changeSelect = createAction(`${name}/getChangeGroupSelect`, withPayloadType<Payloads.getGroup.changeSelect>())
+
     export const reset = createAction(`${name}/getGroupReset`, withPayloadType<PaginationPayload>())
   }
 }
@@ -78,6 +89,7 @@ const sagas = sagasCreator(builder => {
         store.dispatch(Actions.getGroup.loading(true))
 
         const { data } = strictCheck(await request.group.read())
+        /** @TODO 一家人整整齐齐 */
         store.dispatch(Actions.getGroup.success({
           data: data.res,
         }))
@@ -88,15 +100,15 @@ const sagas = sagasCreator(builder => {
       store.dispatch(Actions.getGroup.loading(false))
     })
     .addCase(Actions.getUserlist.fetch, async ({ payload }) => {
-      const { users, group } = getCurrentState()
-      const { page, pageSize = users.pagination.pageSize } = payload
+      const { users, group, currentGroup } = getCurrentState()
+      const { page, pageSize = users.pagination.pageSize, groupID = currentGroup } = payload
       try {
         store.dispatch(Actions.getUserlist.loading(true))
 
         if (!group.data.length) {
           await sagas(Actions.getGroup.fetch())
         }
-        const { data } = strictCheck(await request.userList.read({ page, pageSize }))
+        const { data } = strictCheck(await request.userList.read({ page, pageSize, group: groupID }))
         let list = data.res
         try {
           await webpDetect
@@ -118,10 +130,10 @@ const sagas = sagasCreator(builder => {
           data: list,
           pagination: { page, pageSize, total: data.total }
         }))
+        store.dispatch(Actions.getGroup.changeSelect({ groupID }))
       } catch (e) {
         toast.show({ content: e.message })
       }
-
       store.dispatch(Actions.getUserlist.loading(false))
     })
 })
@@ -166,6 +178,9 @@ export const slice = createSlice({
       })
       .addCase(Actions.getGroup.loading, (state, { payload }) => {
         state.users.loading = payload
+      })
+      .addCase(Actions.getGroup.changeSelect, (state, { payload }) => {
+        state.currentGroup = payload.groupID
       })
   }
 })
