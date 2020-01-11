@@ -131,6 +131,16 @@ const sagas = sagasCreator(builder => {
           pagination: { page, pageSize, total: data.total }
         }))
         store.dispatch(Actions.getGroup.changeSelect({ groupID }))
+
+        /** @TODO 这里列表一次性加载完了 */
+        if (data.total > page * pageSize) {
+          // 加载下一页
+          setTimeout(() => {
+            sagas(Actions.getUserlist.fetch(produce(payload, draft => {
+              draft.page = page + 1
+            })))
+          })
+        }
       } catch (e) {
         toast.show({ content: e.message })
       }
@@ -157,11 +167,13 @@ export const slice = createSlice({
       })
       .addCase(Actions.getUserlist.success, (state, { payload }) => {
         const { group } = state
+
         const groupMap: Map<Group.Item['key'], Group.Item> = new Map()
         group.data.forEach(group => {
           groupMap.set(group.key, group)
         })
-        state.users.data = payload.data.map(user => {
+
+        const userList = payload.data.map(user => {
           const result: UserCard.Item = {
             ...user,
             key: user.id,
@@ -170,6 +182,12 @@ export const slice = createSlice({
 
           return result
         })
+
+        if (payload.pagination.page === 1) {
+          state.users.data = userList
+        } else {
+          state.users.data = state.users.data.concat(userList)
+        }
 
         state.users.pagination = payload.pagination
       })
