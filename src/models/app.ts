@@ -116,7 +116,7 @@ const sagas = sagasCreator(builder => {
             draft.forEach(user => {
               if (/[\.(jpg)|(png)]$/.test(user.avast)) {
                 user.avast = `${user.avast.replace(/(.+)\..+?$/, '$1')}@600.webp`
-              } else {
+              } else if (!/[\.(gif)]$/.test(user.avast)) {
                 user.avast = `${user.avast.replace(/^(.+)(\..+?)$/, '$1@600$2')}`
               }
 
