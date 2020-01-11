@@ -206,7 +206,5 @@ export const slice = createSlice({
 reducerManager.add(slice.name, slice.reducer)
 store.dispatch(Actions.INIT())
 
-sagas(Actions.getUserlist.fetch({ page: 1 }))
-
 export { sagas }
 export default slice

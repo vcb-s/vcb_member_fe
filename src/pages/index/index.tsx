@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import WaterFall from '~/components/waterfall/async'
@@ -7,7 +7,7 @@ import Loading from '~/components/loading'
 import GroupSelect from '~/components/group_select'
 import { Group } from '~/utils/types'
 
-import { slice as globalSlice, State as GlobalState, Actions as GlobalActions, sagas } from '~/models/app'
+import { slice as globalSlice, State as GlobalState, Actions as GlobalActions, sagas as GlobalSagas } from '~/models/app'
 
 import './index.scss'
 
@@ -16,8 +16,12 @@ export default React.memo(function IndexPage () {
   const dispatch = useDispatch()
   const { users, group, currentGroup } = pageState
 
+  useEffect(() => {
+    GlobalSagas(GlobalActions.getUserlist.fetch({ page: 1 }))
+  }, [])
+
   const groupChangeHandle = useCallback((groupID: Group.Item['id']) => {
-    sagas(GlobalActions.getUserlist.fetch({ page: 1, groupID }))
+    GlobalSagas(GlobalActions.getUserlist.fetch({ page: 1, groupID }))
   }, [dispatch])
 
   return (
