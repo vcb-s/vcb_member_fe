@@ -10,7 +10,6 @@ const webpDetect: Promise<boolean> = new Promise(resolve => {
     setTimeout(() => {
       image.onload = undefined
       image.onerror = undefined
-      image.src = undefined
       image = undefined
     })
   }
