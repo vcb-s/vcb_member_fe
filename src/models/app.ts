@@ -114,13 +114,17 @@ const sagas = sagasCreator(builder => {
           await webpDetect
           list = produce(list, draft => {
             draft.forEach(user => {
-              if (/[\.(jpg)|(png)]$/.test(user.avast)) {
-                user.avast = `${user.avast.replace(/(.+)\..+?$/, '$1')}@600.webp`
-              } else if (!/[\.(gif)]$/.test(user.avast)) {
-                user.avast = `${user.avast.replace(/^(.+)(\..+?)$/, '$1@600$2')}`
-              }
+              // 数据库现在有一部分外链图片，这部分不适用文件优化
+              if (user.avast.indexOf('//') === -1) {
+                // 限定只优化 jpg/png 格式，其他格式如gif什么的就原图展现
+                if (/[\.(jpg)|(png)]$/.test(user.avast)) {
+                  user.avast = `${user.avast.replace(/(.+)\..+?$/, '$1')}@600.webp`
+                } else if (!/[\.(gif)]$/.test(user.avast)) {
+                  user.avast = `${user.avast.replace(/^(.+)(\..+?)$/, '$1@600$2')}`
+                }
 
-              user.avast = `https://cache.cswsadlab.com/vcbs_member/uploads/${user.avast}`
+                user.avast = `https://cache.cswsadlab.com/vcbs_member/uploads/${user.avast}`
+              }
             })
           })
         } catch (e) {
