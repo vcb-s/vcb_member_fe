@@ -7,6 +7,12 @@ import { UserCard, GO_BOOL } from '~/utils/types'
 
 import './index.scss'
 
+declare module 'react' {
+  interface ImgHTMLAttributes<T> extends HTMLAttributes<T> {
+    referrerpolicy?: 'no-referrer'|'no-referrer-when-downgrade'|'origin'|'origin-when-cross-origin'|'unsafe-url'
+  }
+}
+
 interface WaterFallListItemProps {
   data: UserCard.Item
   className?: string
@@ -48,7 +54,13 @@ const WaterFallListItem: WaterFallListItem = ({ data, className, onResize }) => 
     >
       <div className='com_waterfall_item_avast'>
         {/* decoding=async 会触发一次chrome内置的lazy逻辑，导致快速滚动时会出现img的图片请求会出现瞬间被cancel的现象 */}
-        <img src={avast} onLoad={imgLoadedHandle} onError={errorHandle} />
+        <img
+          src={avast}
+          onLoad={imgLoadedHandle}
+          onError={errorHandle}
+          referrerpolicy='no-referrer'
+          crossOrigin='anonymous'
+        />
       </div>
       <div className='com_waterfall_item_text_meta'>
         <div className='com_waterfall_item_text_nickname'>{ data.nickname }</div>
