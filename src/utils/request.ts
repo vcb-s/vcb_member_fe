@@ -4,7 +4,7 @@ import { token } from './token'
 import { PaginationParam, ResponseData, UserCard, Group } from './types'
 
 const fetch = axios.create({
-  baseURL: 'https://www.vcb-s.com/vcbs_member_api',
+  baseURL: '/vcbs_member_api',
   withCredentials: false,
 })
 
