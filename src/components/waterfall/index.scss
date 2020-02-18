@@ -65,6 +65,20 @@
         text-align: left;
         word-break: break-all;
       }
+      .retiredTag {
+        color: gray;
+        border: 1px solid gray;
+        border-radius: 2px;
+        width: 1.3em;
+        height: 1.3em;
+        line-height: 1.3em;
+        font-weight: normal;
+        text-align: center;
+        display: inline-block;
+        transform: scale(0.4) translateY(10px);
+        margin-left: 4px;
+        transform-origin: left top;
+      }
     }
     .com_waterfall_item_bio {
       font-size: 14px;

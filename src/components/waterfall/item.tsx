@@ -61,7 +61,14 @@ const WaterFallListItem: WaterFallListItem = ({ data, className, onResize }) => 
         />
       </div>
       <div className='com_waterfall_item_text_meta'>
-        <div className='com_waterfall_item_text_nickname'>{ data.nickname }</div>
+        <div className='com_waterfall_item_text_nickname'>
+          { data.nickname }
+          {
+            data.retired === GO_BOOL.yes
+              ? <div className='retiredTag' title='荣誉退休'>休</div>
+              : null
+          }
+        </div>
         <div className='com_waterfall_item_text_job'>{ data.job }</div>
       </div>
       <div className='com_waterfall_item_bio'>{ data.bio }</div>
