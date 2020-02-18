@@ -53,13 +53,11 @@ const WaterFallListItem: WaterFallListItem = ({ data, className, onResize }) => 
       ref={ ref }
     >
       <div className='com_waterfall_item_avast'>
-        {/* decoding=async 会触发一次chrome内置的lazy逻辑，导致快速滚动时会出现img的图片请求会出现瞬间被cancel的现象 */}
         <img
           src={avast}
           onLoad={imgLoadedHandle}
           onError={errorHandle}
           referrerpolicy='no-referrer'
-          crossOrigin='anonymous'
         />
       </div>
       <div className='com_waterfall_item_text_meta'>

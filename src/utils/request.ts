@@ -4,7 +4,7 @@ import { token } from './token'
 import { PaginationParam, ResponseData, UserCard, Group } from './types'
 
 const fetch = axios.create({
-  baseURL: location.host.indexOf('localhost') > -1 ? 'http://localhost/vcbs_member_api/' : '/vcbs_member_api/',
+  baseURL: 'https://www.vcb-s.com/vcbs_member_api',
   withCredentials: false,
 })
 

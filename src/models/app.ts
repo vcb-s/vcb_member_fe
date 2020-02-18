@@ -89,9 +89,10 @@ const sagas = sagasCreator(builder => {
         store.dispatch(Actions.getGroup.loading(true))
 
         const { data } = strictCheck(await request.group.read())
-        /** @TODO 一家人整整齐齐 */
         store.dispatch(Actions.getGroup.success({
-          data: data.res,
+          data: produce(data.res, draft => {
+            draft.push({ id: '-1', name: '一家人就要整整齐齐' })
+          }),
         }))
       } catch (e) {
         toast.show({ content: e.message })
