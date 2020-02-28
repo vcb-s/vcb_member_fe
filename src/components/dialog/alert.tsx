@@ -6,7 +6,7 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 
-import { AlertItem } from '~/models/dialog'
+import { AlertItem } from '@/models/dialog'
 
 // const anchorOrigin: DialogProps['onClose'] = { vertical: 'top', horizontal: 'right' }
 

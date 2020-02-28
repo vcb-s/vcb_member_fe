@@ -1,13 +1,13 @@
 import React, { useCallback, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
-import WaterFall from '~/components/waterfall/async'
-import Footer from '~/components/footer/async'
-import Loading from '~/components/loading'
-import GroupSelect from '~/components/group_select'
-import { Group } from '~/utils/types'
+import WaterFall from '@/components/waterfall/async'
+import Footer from '@/components/footer/async'
+import Loading from '@/components/loading'
+import GroupSelect from '@/components/group_select'
+import { Group } from '@/utils/types'
 
-import { slice as globalSlice, State as GlobalState, Actions as GlobalActions, sagas as GlobalSagas } from '~/models/app'
+import { slice as globalSlice, State as GlobalState, Actions as GlobalActions, sagas as GlobalSagas } from '@/models/app'
 
 import './index.scss'
 

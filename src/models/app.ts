@@ -1,13 +1,13 @@
 import produce from 'immer'
 import { createAction, createSlice } from '@reduxjs/toolkit'
 
-import { webpDetect } from '~/utils/webpDetect'
-import { request, strictCheck } from '~/utils/request'
-import { withPayloadType, PaginationPayload, Pagination, UserCard, Group } from '~/utils/types'
-import { sagasCreator } from '~/utils/sagasCreator'
-import { store } from '~/store'
-import { reducerManager } from '~/store/rootReducer'
-import { toast } from '~/utils/dialog'
+import { webpDetect } from '@/utils/webpDetect'
+import { request, strictCheck } from '@/utils/request'
+import { withPayloadType, PaginationPayload, Pagination, UserCard, Group } from '@/utils/types'
+import { sagasCreator } from '@/utils/sagasCreator'
+import { store } from '@/store'
+import { reducerManager } from '@/store/rootReducer'
+import { toast } from '@/utils/dialog'
 
 const name = '@@app'
 

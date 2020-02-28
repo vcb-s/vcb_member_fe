@@ -4,7 +4,7 @@ import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 
-import { Group } from '~/utils/types'
+import { Group } from '@/utils/types'
 
 import './index.scss'
 

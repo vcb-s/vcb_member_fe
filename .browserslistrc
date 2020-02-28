@@ -1,9 +1,0 @@
-last 2 major versions
-
-not ie 6 - 11
-not ExplorerMobile 10 - 11
-not OperaMini all
-not OperaMobile < 100
-not baidu < 100
-not bb < 100
-not kaios < 100

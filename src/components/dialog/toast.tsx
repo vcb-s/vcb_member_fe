@@ -1,7 +1,7 @@
 import React, { NamedExoticComponent } from 'react'
 import Snackbar, { SnackbarProps } from '@material-ui/core/Snackbar'
 
-import { ToastItem } from '~/models/dialog'
+import { ToastItem } from '@/models/dialog'
 
 const anchorOrigin: SnackbarProps['anchorOrigin'] = { vertical: 'top', horizontal: 'right' }
 

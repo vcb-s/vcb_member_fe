@@ -2,18 +2,23 @@
   "compileOnSave": false,
   "compilerOptions": {
     "jsx": "preserve",
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "node",
     "importHelpers": true,
-    "target": "esnext",
+
+    "sourceMap": true,
+
     "baseUrl": "./src",
     "paths": {
-      "~/*": ["./*"]
-    }
+      "@/*": ["./*"]
+    },
+    "outDir": "dist"
   },
   "include": [
     "src/**/*.*"

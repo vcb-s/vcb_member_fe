@@ -1,8 +1,8 @@
 import { createAction, createSlice } from '@reduxjs/toolkit'
 
-import { withPayloadType } from '~/utils/types'
-import { store } from '~/store'
-import { reducerManager } from '~/store/rootReducer'
+import { withPayloadType } from '@/utils/types'
+import { store } from '@/store'
+import { reducerManager } from '@/store/rootReducer'
 
 const name = '@@dialog'
 

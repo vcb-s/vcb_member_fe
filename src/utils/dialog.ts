@@ -1,6 +1,6 @@
-import store from '~/store'
-import ID from '~/utils/union_id'
-import { Actions } from '~/models/dialog'
+import store from '@/store'
+import ID from '@/utils/union_id'
+import { Actions } from '@/models/dialog'
 
 export interface AlertParam {
   title?: string

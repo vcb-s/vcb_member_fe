@@ -1,6 +1,6 @@
 import React, { FunctionComponent, memo } from 'react'
 
-import loadingIcon from '~/assets/loading.svg'
+import loadingIcon from '@/assets/loading.svg'
 import './index.scss'
 
 interface Props {

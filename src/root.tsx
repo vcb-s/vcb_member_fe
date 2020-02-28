@@ -5,7 +5,7 @@ import CssBaseline from '@material-ui/core/CssBaseline'
 import 'typeface-roboto'
 
 import Routes from './routes'
-import { Dialogs } from '~/components/dialog'
+import { Dialogs } from '@/components/dialog'
 
 import store from './store'
 

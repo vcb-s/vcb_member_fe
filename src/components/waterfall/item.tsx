@@ -3,7 +3,7 @@ import { useInView } from 'react-intersection-observer'
 import { useMedia } from 'react-use'
 import classnames from 'classnames'
 
-import { UserCard, GO_BOOL } from '~/utils/types'
+import { UserCard, GO_BOOL } from '@/utils/types'
 
 import './index.scss'
 

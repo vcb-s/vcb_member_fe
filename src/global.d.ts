@@ -1,4 +1,5 @@
 declare module 'masonry-layout'
+declare module 'intersection-observer'
 
 declare module '*.scss'
 declare module '*.svg'

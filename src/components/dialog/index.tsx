@@ -1,7 +1,7 @@
 import React, { FC, NamedExoticComponent } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
-import slice, { Actions, State, ToastItem, AlertItem } from '~/models/dialog'
+import slice, { Actions, State, ToastItem, AlertItem } from '@/models/dialog'
 import { Toast } from './toast'
 import { Alert } from './alert'
 

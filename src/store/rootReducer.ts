@@ -1,6 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit'
 
-import { produce } from '~/utils/immer'
+import { produce } from '@/utils/immer'
 
 function createReducerManager(initialReducers: Parameters<typeof combineReducers>[0]) {
   // Create an object which maps keys to reducers

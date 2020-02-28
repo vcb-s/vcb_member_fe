@@ -1,7 +1,7 @@
 import React from 'react'
 import masonry from 'masonry-layout'
 
-import { UserCard } from '~/utils/types'
+import { UserCard } from '@/utils/types'
 import { WaterFallListItem } from './item'
 
 import './index.scss'
