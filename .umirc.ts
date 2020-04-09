@@ -11,6 +11,11 @@ export default defineConfig({
   nodeModulesTransform: { type: 'none' },
   favicon: '/assets/favicon.ico',
 
+  analyze: {
+    analyzerMode: 'static',
+    openAnalyzer: true,
+  },
+
   proxy: {
     '/vcbs_member_api': {
       target: 'https://vcb-s.com',
@@ -20,6 +25,7 @@ export default defineConfig({
 
   dva: {
     immer: true,
+    hmr: false,
   },
 
   sass: {

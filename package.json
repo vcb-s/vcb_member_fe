@@ -8,8 +8,7 @@
   "license": "GPL-3.0",
   "scripts": {
     "start": "umi dev",
-    "build": "umi build",
-    "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'",
+    "build": "cross-env ANALYZE=1 umi build",
     "test": "umi-test",
     "test:coverage": "umi-test --coverage"
   },
@@ -18,7 +17,6 @@
     "@material-ui/icons": "^4.9.1",
     "axios": "^0.19.2",
     "classnames": "^2.2.6",
-    "immer": "^6.0.3",
     "intersection-observer": "^0.7.0",
     "masonry-layout": "^4.2.2",
     "react": "^16.13.1",
@@ -41,6 +39,7 @@
     "@umijs/plugin-dva": "^0.6.4",
     "@umijs/plugin-sass": "^1.1.1",
     "@umijs/test": "^3.1.0",
+    "cross-env": "^7.0.2",
     "eslint": "^6.8.0",
     "eslint-plugin-react-hooks": "^3.0.0",
     "fibers": "^4.0.2",
