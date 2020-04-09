@@ -1,103 +1,110 @@
-import { createAction, createSlice } from '@reduxjs/toolkit'
+import type { Action, Reducer } from '@/utils/types';
 
-import { withPayloadType } from '@/utils/types'
-import { store } from '@/store'
-import { reducerManager } from '@/store/rootReducer'
+export namespace DialogModel {
+  export const namespace = '@@dialog';
+  export const currentState = (_: any): State => _[namespace];
 
-const name = '@@dialog'
+  export enum ActionType {
+    showAlert = 'showAlert',
+    hideAlert = 'hideAlert',
+    showToast = 'showToast',
+    hideToast = 'hideToast',
+  }
+  export interface Payload {
+    [ActionType.showAlert]: { id: string; title: string; content: string };
+    [ActionType.hideAlert]: { id?: string };
+    [ActionType.showToast]: { id: string; content: string };
+    [ActionType.hideToast]: { id?: string };
+  }
 
-export interface AlertItem {
-  key: string
-  id: string
-  title: string
-  content: string
+  export const createAction = <K extends keyof Payload>(key: K) => {
+    return (payload: Payload[K]) => {
+      return { type: `${namespace}/${key}`, payload: payload };
+    };
+  };
+
+  export interface AlertItem {
+    key: string;
+    id: string;
+    title: string;
+    content: string;
+  }
+
+  export interface ToastItem {
+    key: string;
+    id: string;
+    content: string;
+  }
+
+  export interface State {
+    alert: AlertItem[];
+    toast: ToastItem[];
+  }
 }
 
-export interface ToastItem {
-  key: string
-  id: string
-  content: string
-}
+const { namespace } = DialogModel;
 
-export interface State {
-  alert: AlertItem[],
-  toast: ToastItem[]
-}
-const initialState: State = {
+interface Payload extends DialogModel.Payload {}
+interface State extends DialogModel.State {}
+
+const initalState: State = {
   alert: [],
-  toast: []
-}
+  toast: [],
+};
 
-const currentState = (): State => store.getState()[name]
+// const createAction = <K extends keyof Payload>(key: K) => {
+//   return (payload: Payload[K]) => {
+//     return { type: key, payload: payload };
+//   };
+// };
 
-export namespace Payloads {
-  export namespace Alert {
-    export type show = { id: string, title: string, content: string }
-    export type hide = { id?: string }
-  }
+const reducers: Partial<Record<DialogModel.ActionType, Reducer<State>>> = {
+  [DialogModel.ActionType.showAlert](
+    state,
+    { payload }: Action<Payload[DialogModel.ActionType.showAlert]>,
+  ) {
+    state.alert.push({
+      key: payload.id,
+      id: payload.id,
+      title: payload.title,
+      content: payload.content,
+    });
+  },
+  [DialogModel.ActionType.hideAlert](
+    state,
+    { payload }: Action<Payload[DialogModel.ActionType.hideAlert]>,
+  ) {
+    if (payload.id) {
+      state.alert = state.alert.filter((toast) => toast.id !== payload.id);
+    } else {
+      state.alert = [];
+    }
+  },
+  [DialogModel.ActionType.showToast](
+    state,
+    { payload }: Action<Payload[DialogModel.ActionType.showToast]>,
+  ) {
+    state.toast.push({
+      key: payload.id,
+      id: payload.id,
+      content: payload.content,
+    });
+  },
+  [DialogModel.ActionType.hideToast](
+    state,
+    { payload }: Action<Payload[DialogModel.ActionType.hideToast]>,
+  ) {
+    if (payload.id) {
+      state.toast = state.toast.filter((toast) => toast.id !== payload.id);
+    } else {
+      state.toast = [];
+    }
+  },
+};
 
-  export namespace Toast {
-    export type show = { id: string, content: string }
-    export type hide = { id?: string }
-  }
-}
-
-export namespace Actions {
-  export const INIT = createAction(`${name}/init`, withPayloadType<void>())
-
-  export namespace Alert {
-    export const show = createAction(`${name}/showAlert`, withPayloadType<Payloads.Alert.show>())
-    export const hide = createAction(`${name}/hideAlert`, withPayloadType<Payloads.Alert.hide>())
-  }
-
-  export namespace Toast {
-    export const show = createAction(`${name}/showToast`, withPayloadType<Payloads.Toast.show>())
-    export const hide = createAction(`${name}/hideToast`, withPayloadType<Payloads.Toast.hide>())
-  }
-}
-
-export const slice = createSlice({
-  name,
-  initialState,
-  reducers: {},
-  extraReducers: build => {
-    build
-      .addCase(Actions.INIT, () => undefined)
-      .addCase(Actions.Alert.show, (state, { payload }) => {
-        state.alert.push({
-          key: payload.id,
-          id: payload.id,
-          title: payload.title,
-          content: payload.content,
-        })
-      })
-      .addCase(Actions.Alert.hide, (state, { payload }) => {
-        if (payload.id) {
-          state.toast = state.toast.filter(toast => toast.id !== payload.id)
-        } else {
-          state.toast = []
-        }
-      })
-      .addCase(Actions.Toast.show, (state, { payload }) => {
-        state.toast.push({
-          key: payload.id,
-          id: payload.id,
-          content: payload.content,
-        })
-      })
-      .addCase(Actions.Toast.hide, (state, { payload }) => {
-        if (payload.id) {
-          state.toast = state.toast.filter(toast => toast.id !== payload.id)
-        } else {
-          state.toast = []
-        }
-      })
-  }
-})
-
-
-
-reducerManager.add(slice.name, slice.reducer)
-store.dispatch(Actions.INIT())
-
-export default slice
+export default {
+  namespace,
+  state: initalState,
+  effects: {},
+  reducers,
+};

@@ -1,215 +1,250 @@
-import produce from 'immer'
-import { createAction, createSlice } from '@reduxjs/toolkit'
+import { produce } from 'immer';
 
-import { webpDetect } from '@/utils/webpDetect'
-import { request, strictCheck } from '@/utils/request'
-import { withPayloadType, PaginationPayload, Pagination, UserCard, Group } from '@/utils/types'
-import { sagasCreator } from '@/utils/sagasCreator'
-import { store } from '@/store'
-import { reducerManager } from '@/store/rootReducer'
-import { toast } from '@/utils/dialog'
+import { Action, Reducer, Effect, PromisedType } from '@/utils/types';
+import { Group } from '@/utils/types/Group';
+import { UserCard } from '@/utils/types/UserCard';
+import { emptyList } from '@/utils/types/CommonList';
+import { Pagination } from '@/utils/types/Pagination';
+import { webpDetect } from '@/utils/webpDetect';
+import { request, strictCheck } from '@/utils/request';
+import { toast } from '@/utils/dialog';
 
-const name = '@@app'
+export namespace AppModels {
+  export const namespace = 'app';
 
-export interface State {
-  users: UserCard.List
-  group: Group.List
-  currentGroup: Group.Item['id']
+  export enum ActionType {
+    reset = 'reset',
+
+    getGroup = 'getGroup',
+    getGroupSuccess = 'getGroupSuccess',
+    getGroupFail = 'getGroupFail',
+
+    changeGroup = 'changeGroup',
+
+    getUserlist = 'getUserlist',
+    getUserlistSuccess = 'getUserlistSuccess',
+    getUserlistFail = 'getUserlistFail',
+  }
+
+  export interface Payload {
+    [ActionType.reset]: undefined;
+
+    [ActionType.getGroup]: undefined;
+    [ActionType.getGroupSuccess]: {
+      data: Group.ItemInResponse[];
+    };
+    [ActionType.getGroupFail]: { err?: Error };
+
+    [ActionType.changeGroup]: { groupID?: Group.Item['id'] };
+
+    [ActionType.getUserlist]: {
+      page: number;
+      pageSize?: number;
+      groupID?: Group.Item['id'];
+    };
+    [ActionType.getUserlistSuccess]: {
+      data: UserCard.ItemInResponse[];
+      group: Group.Item['id'];
+      pagination: Pagination;
+    };
+    [ActionType.getUserlistFail]: { err?: Error };
+  }
+
+  /** 统一导出State，降低引用Model时心智负担，统一都使用State就行了 */
+  export interface State {
+    users: UserCard.List;
+    group: Group.List;
+    currentGroup: Group.Item['id'];
+  }
+
+  export const createAction = <K extends keyof Payload>(key: K) => {
+    return (payload: Payload[K]) => {
+      return { type: `${namespace}/${key}`, payload: payload };
+    };
+  };
+  export const currentState = (_: any) => _[namespace];
 }
-const initialState: State = {
-  users: {
-    data: [],
-    pagination: {
-      page: 1,
-      pageSize: 20,
-      total: 0,
-    },
-    loading: false,
+
+const { namespace, currentState } = AppModels;
+
+interface Payload extends AppModels.Payload {}
+interface State extends AppModels.State {}
+
+const createAction = <K extends keyof Payload>(key: K) => {
+  return (payload: Payload[K]) => {
+    return { type: key, payload: payload };
+  };
+};
+
+const initalState: State = {
+  users: emptyList,
+  group: emptyList,
+  currentGroup: '1',
+};
+
+const reducers: Partial<Record<AppModels.ActionType, Reducer<State>>> = {
+  [AppModels.ActionType.reset]() {
+    return initalState;
   },
-  group: {
-    data: [],
-    loading: false,
+  [AppModels.ActionType.getGroupSuccess](
+    state,
+    { payload }: Action<Payload[AppModels.ActionType.getGroupSuccess]>,
+  ) {
+    state.group.data = payload.data.map((i) => ({ ...i, key: i.id }));
   },
-  /** 约定：1 为管理组 */
-  currentGroup: '1'
-}
+  [AppModels.ActionType.getGroupFail]() {},
+  [AppModels.ActionType.getUserlistSuccess](
+    state,
+    { payload }: Action<Payload[AppModels.ActionType.getUserlistSuccess]>,
+  ) {
+    const { group } = state;
 
-const getCurrentState = (): State => store.getState()[name]
+    const groupMap: Map<Group.Item['key'], Group.Item> = new Map();
+    group.data.forEach((group) => {
+      groupMap.set(group.key, group);
+    });
 
-export namespace Payloads {
-  export namespace getUserlist {
-    export interface fetch extends PaginationPayload {
-      groupID?: Group.Item['id']
+    const userList = payload.data.map((user) => {
+      const result: UserCard.Item = {
+        ...user,
+        key: user.id,
+        group: user.group
+          .split(',')
+          .map((id) => groupMap.get(id) || group.data[0])
+          .filter((_) => _),
+      };
+
+      return result;
+    });
+
+    if (payload.pagination.page === 1) {
+      state.users.data = userList;
+    } else {
+      state.users.data = state.users.data.concat(userList);
     }
-    export interface success {
-      data: UserCard.ItemInResponse[]
-      pagination: Pagination
-    }
-    export type loading = boolean
-  }
-  export namespace getGroup {
-    export interface success {
-      data: Group.ItemInResponse[]
-    }
-    export interface changeSelect {
-      groupID: Group.Item['id']
-    }
-    export type loading = boolean
-  }
-}
 
-export namespace Actions {
-  export const INIT = createAction(`${name}/init`, withPayloadType<void>())
+    state.users.pagination = payload.pagination;
+    state.currentGroup = payload.group;
+  },
+  [AppModels.ActionType.getUserlistFail]() {
+    return initalState;
+  },
+};
 
-  export const initDataLoad = createAction(`${name}/init`, withPayloadType<void>())
-  export namespace getUserlist {
-    export const fetch = createAction(`${name}/getUserlist`, withPayloadType<Payloads.getUserlist.fetch>())
-    export const success = createAction(`${name}/getUserlistSuccess`, withPayloadType<Payloads.getUserlist.success>())
-    // export const fail = createAction(`${name}/getUserlistFail`, withPayloadType<PaginationPayload>())
-    export const loading = createAction(`${name}/getUserlistLoading`, withPayloadType<Payloads.getUserlist.loading>())
+const effects: Partial<Record<AppModels.ActionType, Effect>> = {
+  *[AppModels.ActionType.getGroup](
+    { payload }: Action<Payload[AppModels.ActionType.getGroup]>,
+    { call, put },
+  ) {
+    try {
+      const res: ReturnType<typeof request.group.read> = yield call(
+        request.group.read,
+      );
+      const { data } = strictCheck(PromisedType(res));
 
-    export const reset = createAction(`${name}/getUserlistReset`, withPayloadType<PaginationPayload>())
-  }
-  export namespace getGroup {
-    export const fetch = createAction(`${name}/getGroup`, withPayloadType<void>())
-    export const success = createAction(`${name}/getGroupSuccess`, withPayloadType<Payloads.getGroup.success>())
-    // export const fail = createAction(`${name}/getGroupFail`, withPayloadType<PaginationPayload>())
-    export const loading = createAction(`${name}/getGroupLoading`, withPayloadType<Payloads.getGroup.loading>())
-
-    export const changeSelect = createAction(`${name}/getChangeGroupSelect`, withPayloadType<Payloads.getGroup.changeSelect>())
-
-    export const reset = createAction(`${name}/getGroupReset`, withPayloadType<PaginationPayload>())
-  }
-}
-
-const sagas = sagasCreator(builder => {
-  builder
-    .addCase(Actions.getGroup.fetch, async () => {
-      try {
-        store.dispatch(Actions.getGroup.loading(true))
-
-        const { data } = strictCheck(await request.group.read())
-        store.dispatch(Actions.getGroup.success({
-          data: produce(data.res, draft => {
-            draft.push({ id: '-1', name: '一家人就要整整齐齐' })
+      yield put(
+        createAction(AppModels.ActionType.getGroupSuccess)({
+          data: produce(data.res, (draft) => {
+            draft.push({ id: '-1', name: '一家人就要整整齐齐' });
           }),
-        }))
-      } catch (e) {
-        toast.show({ content: e.message })
-      }
-
-      store.dispatch(Actions.getGroup.loading(false))
-    })
-    .addCase(Actions.getUserlist.fetch, async ({ payload }) => {
-      const { users, group, currentGroup } = getCurrentState()
-      const { page, pageSize = users.pagination.pageSize, groupID = currentGroup } = payload
-      try {
-        store.dispatch(Actions.getUserlist.loading(true))
-
-        if (!group.data.length) {
-          await sagas(Actions.getGroup.fetch())
+        }),
+      );
+    } catch (e) {
+      toast.show({ content: e.message });
+    }
+  },
+  *[AppModels.ActionType.getUserlist](
+    { payload }: Action<Payload[AppModels.ActionType.getUserlist]>,
+    { call, put, select, take, race },
+  ) {
+    const { users, group, currentGroup }: State = yield select(currentState);
+    const getGroupLoading: State = yield select((_: any) => {
+      console.log('_.loading.effects', _.loading.effects);
+      return _.loading.effects[`${namespace}/${AppModels.ActionType.getGroup}`];
+    });
+    const {
+      page,
+      pageSize = users.pagination.pageSize,
+      groupID = currentGroup,
+    } = payload;
+    try {
+      if (!group.data.length) {
+        if (!getGroupLoading) {
+          yield put(createAction(AppModels.ActionType.getGroup)(undefined));
         }
-        const { data } = strictCheck(await request.userList.read({ page, pageSize, group: groupID }))
-        let list = data.res
-        try {
-          await webpDetect
-          list = produce(list, draft => {
-            draft.forEach(user => {
+        const { f } = yield race({
+          s: take(AppModels.ActionType.getGroupSuccess),
+          f: take(AppModels.ActionType.getGroupFail),
+        });
+
+        if (f) {
+          debugger;
+          return;
+        }
+      }
+      const res: ReturnType<typeof request.userList.read> = yield call(
+        request.userList.read,
+        { page, pageSize, group: groupID },
+      );
+      const { data } = strictCheck(PromisedType(res));
+
+      let list = data.res;
+      try {
+        if (yield call(() => webpDetect)) {
+          list = produce(list, (draft) => {
+            draft.forEach((user) => {
               // 数据库现在有一部分外链图片，这部分不适用文件优化
               if (user.avast.indexOf('//') === -1) {
                 // 限定只优化 jpg/png 格式，其他格式如gif什么的就原图展现
                 if (/[\.(jpg)|(png)]$/.test(user.avast)) {
-                  user.avast = `${user.avast.replace(/(.+)\..+?$/, '$1')}@600.webp`
+                  user.avast = `${user.avast.replace(
+                    /(.+)\..+?$/,
+                    '$1',
+                  )}@600.webp`;
                 } else if (!/[\.(gif)]$/.test(user.avast)) {
-                  user.avast = `${user.avast.replace(/^(.+)(\..+?)$/, '$1@600$2')}`
+                  user.avast = `${user.avast.replace(
+                    /^(.+)(\..+?)$/,
+                    '$1@600$2',
+                  )}`;
                 }
 
-                user.avast = `https://cache.cswsadlab.com/vcbs_member/uploads/${user.avast}`
+                user.avast = `https://cache.cswsadlab.com/vcbs_member/uploads/${user.avast}`;
               }
-            })
-          })
-        } catch (e) {
-          // 不支持webp，静默失败
-        }
-        store.dispatch(Actions.getUserlist.success({
-          data: list,
-          pagination: { page, pageSize, total: data.total }
-        }))
-        store.dispatch(Actions.getGroup.changeSelect({ groupID }))
-
-        /** @TODO 这里列表一次性加载完了 */
-        if (data.total > page * pageSize) {
-          // 加载下一页
-          setTimeout(() => {
-            sagas(Actions.getUserlist.fetch(produce(payload, draft => {
-              draft.page = page + 1
-            })))
-          })
+            });
+          });
         }
       } catch (e) {
-        toast.show({ content: e.message })
+        // 不支持webp，静默失败
       }
-      store.dispatch(Actions.getUserlist.loading(false))
-    })
-})
 
-export const slice = createSlice({
-  name,
-  initialState,
-  reducers: {},
-  extraReducers: build => {
-    build
-      .addCase(Actions.INIT, () => undefined)
-      .addCase(Actions.getGroup.success, (state, { payload }) => {
-        state.group.data = payload.data.map(group => {
-          const result: Group.Item = {
-            ...group,
-            key: group.id,
-          }
+      yield put(
+        createAction(AppModels.ActionType.getUserlistSuccess)({
+          data: list,
+          pagination: { page, pageSize, total: data.total },
+          group: currentGroup,
+        }),
+      );
 
-          return result
-        })
-      })
-      .addCase(Actions.getUserlist.success, (state, { payload }) => {
-        const { group } = state
+      /** @TODO 这里列表一次性加载完了 */
+      if (data.total > page * pageSize) {
+        // 加载下一页
+        yield put(
+          createAction(AppModels.ActionType.getUserlist)({
+            ...payload,
+            page: page + 1,
+          }),
+        );
+      }
+    } catch (err) {
+      yield put(createAction(AppModels.ActionType.getUserlistFail)({ err }));
+      toast.show({ content: err.message });
+    }
+  },
+};
 
-        const groupMap: Map<Group.Item['key'], Group.Item> = new Map()
-        group.data.forEach(group => {
-          groupMap.set(group.key, group)
-        })
-
-        const userList = payload.data.map(user => {
-          const result: UserCard.Item = {
-            ...user,
-            key: user.id,
-            group: user.group.split(',').map(id => groupMap.get(id) || null).filter(_ => _),
-          }
-
-          return result
-        })
-
-        if (payload.pagination.page === 1) {
-          state.users.data = userList
-        } else {
-          state.users.data = state.users.data.concat(userList)
-        }
-
-        state.users.pagination = payload.pagination
-      })
-      .addCase(Actions.getUserlist.loading, (state, { payload }) => {
-        state.users.loading = payload
-      })
-      .addCase(Actions.getGroup.loading, (state, { payload }) => {
-        state.users.loading = payload
-      })
-      .addCase(Actions.getGroup.changeSelect, (state, { payload }) => {
-        state.currentGroup = payload.groupID
-      })
-  }
-})
-
-reducerManager.add(slice.name, slice.reducer)
-store.dispatch(Actions.INIT())
-
-export { sagas }
-export default slice
+export default {
+  namespace,
+  state: initalState,
+  effects,
+  reducers,
+};

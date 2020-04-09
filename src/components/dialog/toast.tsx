@@ -1,19 +1,22 @@
-import React, { NamedExoticComponent } from 'react'
-import Snackbar, { SnackbarProps } from '@material-ui/core/Snackbar'
+import React, { NamedExoticComponent } from 'react';
+import Snackbar, { SnackbarProps } from '@material-ui/core/Snackbar';
 
-import { ToastItem } from '@/models/dialog'
+import { DialogModel } from '@/models/dialog';
 
-const anchorOrigin: SnackbarProps['anchorOrigin'] = { vertical: 'top', horizontal: 'right' }
+const anchorOrigin: SnackbarProps['anchorOrigin'] = {
+  vertical: 'top',
+  horizontal: 'right',
+};
 
 interface Props {
-  data: ToastItem
-  onClose: (id: ToastItem['id']) => void
+  data: DialogModel.ToastItem;
+  onClose: (id: DialogModel.ToastItem['id']) => void;
 }
-const Toast: NamedExoticComponent<Props> = React.memo(props => {
-  const { data, onClose } = props
+const Toast: NamedExoticComponent<Props> = React.memo((props) => {
+  const { data, onClose } = props;
   const handleClose = React.useCallback(() => {
-    onClose(data.id)
-  }, [data, onClose])
+    onClose(data.id);
+  }, [data, onClose]);
 
   return (
     <Snackbar
@@ -21,10 +24,14 @@ const Toast: NamedExoticComponent<Props> = React.memo(props => {
       key={data.key}
       open={!!data.content}
       onClose={handleClose}
-      message={<span key={data.key} id={data.id}>{data.content}</span>}
+      message={
+        <span key={data.key} id={data.id}>
+          {data.content}
+        </span>
+      }
     />
-  )
-})
+  );
+});
 
-export { Toast }
-export default Toast
+export { Toast };
+export default Toast;

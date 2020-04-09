@@ -1,26 +1,21 @@
 {
-  "compileOnSave": false,
   "compilerOptions": {
-    "jsx": "preserve",
+    "jsx": "react",
     "target": "esnext",
     "module": "esnext",
     "moduleResolution": "node",
-
-    "allowSyntheticDefaultImports": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
     "esModuleInterop": true,
     "importHelpers": true,
 
     "sourceMap": true,
-
-    "baseUrl": "./src",
+    "baseUrl": ".",
+    "strict": true,
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["src/*"],
+      "@@/*": ["src/.umi/*"]
     },
-    "outDir": "dist"
+    "allowSyntheticDefaultImports": true,
+    "preserveConstEnums": true
   },
-  "include": [
-    "src/**/*.*"
-  ]
+  "include": ["src", ".umirc.ts"]
 }

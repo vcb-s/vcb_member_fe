@@ -1,39 +1,79 @@
-import store from '@/store'
-import ID from '@/utils/union_id'
-import { Actions } from '@/models/dialog'
+import ID from '@/utils/union_id';
+import { getDvaApp } from 'umi';
+import { DialogModel } from '@/models/dialog';
 
 export interface AlertParam {
-  title?: string
-  content: string
+  title?: string;
+  content: string;
 }
 export const model = {
-  show: (opt: AlertParam|Error) => {
-    const id = `${ID()}`
+  show: (opt: AlertParam | Error) => {
+    const { _store: store } = getDvaApp() || {};
+    if (!store) {
+      return;
+    }
+    const id = `${ID()}`;
     if (opt instanceof Error) {
-      store.dispatch(Actions.Alert.show({ id, title: '提示', content: opt.message }))
+      store.dispatch(
+        DialogModel.createAction(DialogModel.ActionType.showAlert)({
+          id,
+          title: '提示',
+          content: opt.message,
+        }),
+      );
     } else {
-      const { title = '提示', content } = opt
-      store.dispatch(Actions.Alert.show({ id, title, content }))
+      const { title = '提示', content } = opt;
+      store.dispatch(
+        DialogModel.createAction(DialogModel.ActionType.showAlert)({
+          id,
+          title,
+          content,
+        }),
+      );
     }
   },
   hide: (id?: string) => {
-    store.dispatch(Actions.Alert.hide({ id }))
-  }
-}
+    const { _store: store } = getDvaApp() || {};
+    if (!store) {
+      return;
+    }
+    store.dispatch(
+      DialogModel.createAction(DialogModel.ActionType.hideAlert)({ id }),
+    );
+  },
+};
 
 export interface ToastParam {
-  content: string
-  time?: number
+  content: string;
+  time?: number;
 }
 export const toast = {
   show: (opt: ToastParam) => {
-    const { content, time = 1500 } = opt
+    const { _store: store } = getDvaApp() || {};
+    if (!store) {
+      return;
+    }
+
+    const { content, time = 1500 } = opt;
     const id = setTimeout(() => {
-      store.dispatch(Actions.Toast.hide({ id }))
-    }, time).toString()
-    store.dispatch(Actions.Toast.show({ id, content }))
+      store.dispatch(
+        DialogModel.createAction(DialogModel.ActionType.hideToast)({ id }),
+      );
+    }, time).toString();
+    store.dispatch(
+      DialogModel.createAction(DialogModel.ActionType.showToast)({
+        id,
+        content,
+      }),
+    );
   },
   hide: (id?: string) => {
-    store.dispatch(Actions.Toast.hide({ id }))
-  }
-}
+    const { _store: store } = getDvaApp() || {};
+    if (!store) {
+      return;
+    }
+    store.dispatch(
+      DialogModel.createAction(DialogModel.ActionType.hideToast)({ id }),
+    );
+  },
+};
