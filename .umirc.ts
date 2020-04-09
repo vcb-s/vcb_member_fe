@@ -3,7 +3,8 @@ import fiber from 'fibers';
 
 export default defineConfig({
   title: 'vcb-s成员介绍',
-  publicPath: './',
+  base: '/vcbs_member/',
+  publicPath: '/vcbs_member/',
 
   hash: true,
   dynamicImport: {},
