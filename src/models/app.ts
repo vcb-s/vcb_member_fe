@@ -158,15 +158,21 @@ const effects: Partial<Record<AppModels.ActionType, Effect>> = {
     { call, put, select, take, race },
   ) {
     const { users, group, currentGroup }: State = yield select(currentState);
-    const getGroupLoading: State = yield select((_: any) => {
-      console.log('_.loading.effects', _.loading.effects);
-      return _.loading.effects[`${namespace}/${AppModels.ActionType.getGroup}`];
-    });
+    const getGroupLoading: State = yield select(
+      (_: any) =>
+        _.loading.effects[`${namespace}/${AppModels.ActionType.getGroup}`],
+    );
     const {
       page,
       pageSize = users.pagination.pageSize,
       groupID = currentGroup,
     } = payload;
+
+    const param: request.userList.ReadParam = {
+      page,
+      pageSize,
+      group: groupID,
+    };
     try {
       if (!group.data.length) {
         if (!getGroupLoading) {
@@ -184,7 +190,7 @@ const effects: Partial<Record<AppModels.ActionType, Effect>> = {
       }
       const res: ReturnType<typeof request.userList.read> = yield call(
         request.userList.read,
-        { page, pageSize, group: groupID },
+        param,
       );
       const { data } = strictCheck(PromisedType(res));
 
@@ -221,7 +227,7 @@ const effects: Partial<Record<AppModels.ActionType, Effect>> = {
         createAction(AppModels.ActionType.getUserlistSuccess)({
           data: list,
           pagination: { page, pageSize, total: data.total },
-          group: currentGroup,
+          group: param.group,
         }),
       );
 

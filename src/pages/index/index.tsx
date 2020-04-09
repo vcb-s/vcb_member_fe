@@ -44,7 +44,7 @@ export default React.memo(function IndexPage() {
     <div className='modules_member_index'>
       <div className='modules_member_index_title'>VCB-Studio 社员一览</div>
 
-      <Loading show={loading} />
+      <Loading show={loading && !users.data.length} />
 
       <GroupSelect
         loading={loading}
