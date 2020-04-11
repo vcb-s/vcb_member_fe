@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import WaterFall from '@/components/waterfall/async';
 import Footer from '@/components/footer/async';
 import Loading from '@/components/loading';
-import GroupSelect from '@/components/group_select';
+import GroupSelect from '@/components/group_select/async';
 import { Group } from '@/utils/types/Group';
 
 import { AppModels } from '@/models/app';

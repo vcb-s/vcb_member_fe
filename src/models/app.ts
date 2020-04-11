@@ -7,7 +7,7 @@ import { emptyList } from '@/utils/types/CommonList';
 import { Pagination } from '@/utils/types/Pagination';
 import { webpDetect } from '@/utils/webpDetect';
 import { request, strictCheck } from '@/utils/request';
-import { toast } from '@/utils/dialog';
+import { toast } from '@/utils/toast';
 
 export namespace AppModels {
   export const namespace = 'app';
@@ -38,14 +38,14 @@ export namespace AppModels {
     [ActionType.changeGroup]: { groupID?: Group.Item['id'] };
 
     [ActionType.getUserlist]: {
-      page: number;
+      page?: number;
       pageSize?: number;
       groupID?: Group.Item['id'];
     };
     [ActionType.getUserlistSuccess]: {
       data: UserCard.ItemInResponse[];
       group: Group.Item['id'];
-      pagination: Pagination;
+      pagination?: Pagination;
     };
     [ActionType.getUserlistFail]: { err?: Error };
   }
@@ -79,7 +79,7 @@ const createAction = <K extends keyof Payload>(key: K) => {
 const initalState: State = {
   users: emptyList,
   group: emptyList,
-  currentGroup: '1',
+  currentGroup: '',
 };
 
 const reducers: Partial<Record<AppModels.ActionType, Reducer<State>>> = {
@@ -117,13 +117,20 @@ const reducers: Partial<Record<AppModels.ActionType, Reducer<State>>> = {
       return result;
     });
 
-    if (payload.pagination.page === 1) {
-      state.users.data = userList;
+    if (payload.pagination) {
+      state.users.pagination = payload.pagination;
     } else {
-      state.users.data = state.users.data.concat(userList);
+      state.users.pagination = initalState.users.pagination;
     }
 
-    state.users.pagination = payload.pagination;
+    if (payload.pagination && payload.pagination.page > 1) {
+      if (payload.pagination.page > 1) {
+        state.users.data = state.users.data.concat(userList);
+      }
+    } else {
+      state.users.data = userList;
+    }
+
     state.currentGroup = payload.group;
   },
   [AppModels.ActionType.getUserlistFail]() {
@@ -150,28 +157,24 @@ const effects: Partial<Record<AppModels.ActionType, Effect>> = {
         }),
       );
     } catch (e) {
-      toast.show({ content: e.message });
+      toast.show(e.message);
     }
   },
   *[AppModels.ActionType.getUserlist](
     { payload }: Action<Payload[AppModels.ActionType.getUserlist]>,
     { call, put, select, take, race },
   ) {
-    const { users, group, currentGroup }: State = yield select(currentState);
+    const { group, currentGroup }: State = yield select(currentState);
     const getGroupLoading: State = yield select(
       (_: any) =>
         _.loading.effects[`${namespace}/${AppModels.ActionType.getGroup}`],
     );
-    const {
-      page,
-      pageSize = users.pagination.pageSize,
-      groupID = currentGroup,
-    } = payload;
+    const { page, pageSize, groupID = currentGroup } = payload;
 
     const param: request.userList.ReadParam = {
       page,
       pageSize,
-      group: groupID,
+      group: groupID || '1',
     };
     try {
       if (!group.data.length) {
@@ -226,24 +229,16 @@ const effects: Partial<Record<AppModels.ActionType, Effect>> = {
       yield put(
         createAction(AppModels.ActionType.getUserlistSuccess)({
           data: list,
-          pagination: { page, pageSize, total: data.total },
+          pagination:
+            page && pageSize
+              ? { page, pageSize, total: data.total }
+              : undefined,
           group: param.group,
         }),
       );
-
-      /** @TODO 这里列表一次性加载完了 */
-      if (data.total > page * pageSize) {
-        // 加载下一页
-        yield put(
-          createAction(AppModels.ActionType.getUserlist)({
-            ...payload,
-            page: page + 1,
-          }),
-        );
-      }
     } catch (err) {
       yield put(createAction(AppModels.ActionType.getUserlistFail)({ err }));
-      toast.show({ content: err.message });
+      toast.show(err.message);
     }
   },
 };

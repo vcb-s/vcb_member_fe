@@ -54,11 +54,9 @@ const ajax = (param: FetchParam) => {
 
 namespace request {
   export namespace userList {
-    export interface ReadParam extends PaginationParam {
+    export interface ReadParam extends Partial<PaginationParam> {
       group: Group.Item['id'];
       retired?: UserCard.Item['retired'];
-      /** @TODO */
-      // sticky?: UserCard.Item['sticky']
     }
     export type ReadResponse = ResponseData.Ok<{
       res: UserCard.ItemInResponse[];
