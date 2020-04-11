@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import WaterFall from '@/components/waterfall/async';
@@ -12,7 +12,7 @@ import { AppModels } from '@/models/app';
 import './index.scss';
 
 export default React.memo(function IndexPage() {
-  const pageState: AppModels.State = useSelector(AppModels.currentState);
+  const pageState = useSelector(AppModels.currentState);
   const loading: boolean = useSelector(
     (_: any) => _.loading.models[AppModels.namespace],
   );
@@ -23,7 +23,7 @@ export default React.memo(function IndexPage() {
   useEffect(() => {
     dispatch(
       AppModels.createAction(AppModels.ActionType.getUserlist)({
-        page: 1,
+        groupID: '1',
       }),
     );
   }, [dispatch]);
@@ -31,20 +31,30 @@ export default React.memo(function IndexPage() {
   const groupChangeHandle = useCallback(
     (groupID: Group.Item['id']) => {
       dispatch(
-        AppModels.createAction(AppModels.ActionType.getUserlist)({
-          page: 1,
-          groupID,
-        }),
+        AppModels.createAction(AppModels.ActionType.changeGroup)({ groupID }),
       );
     },
     [dispatch],
   );
 
+  const maxLengthOfData = useMemo(() => {
+    let maxLength = 0;
+    Object.keys(users).forEach((group) => {
+      maxLength = Math.max(users[group]?.data.length || 0, maxLength);
+    });
+
+    return maxLength;
+  }, [users]);
+
+  const cardList = useMemo(() => {
+    return users[currentGroup]?.data || [];
+  }, [currentGroup, users]);
+
   return (
     <div className='modules_member_index'>
       <div className='modules_member_index_title'>VCB-Studio 社员一览</div>
 
-      <Loading show={loading && !users.data.length} />
+      <Loading show={loading && !maxLengthOfData} />
 
       <GroupSelect
         loading={loading}
@@ -55,7 +65,7 @@ export default React.memo(function IndexPage() {
 
       <div style={{ height: '20px' }} />
 
-      <WaterFall data={users.data} />
+      <WaterFall data={cardList} />
       <Footer />
     </div>
   );

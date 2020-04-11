@@ -37,6 +37,7 @@ export const Menu: React.FC<Props> = React.memo(function Button(props) {
       label={selectLabel}
       value={selected}
       onEnhancedChange={changeHandle}
+      disabled={loading}
     >
       {groupItems.map((group) => (
         <Option key={group.key} value={group.id}>

@@ -20,6 +20,7 @@ export namespace AppModels {
     getGroupFail = 'getGroupFail',
 
     changeGroup = 'changeGroup',
+    changeGroupOffline = 'changeGroupOffline',
 
     getUserlist = 'getUserlist',
     getUserlistSuccess = 'getUserlistSuccess',
@@ -35,7 +36,8 @@ export namespace AppModels {
     };
     [ActionType.getGroupFail]: { err?: Error };
 
-    [ActionType.changeGroup]: { groupID?: Group.Item['id'] };
+    [ActionType.changeGroup]: { groupID: Group.Item['id'] };
+    [ActionType.changeGroupOffline]: { groupID: Group.Item['id'] };
 
     [ActionType.getUserlist]: {
       page?: number;
@@ -52,7 +54,7 @@ export namespace AppModels {
 
   /** 统一导出State，降低引用Model时心智负担，统一都使用State就行了 */
   export interface State {
-    users: UserCard.List;
+    users: Record<Group.Item['id'], UserCard.List | undefined>;
     group: Group.List;
     currentGroup: Group.Item['id'];
   }
@@ -62,7 +64,7 @@ export namespace AppModels {
       return { type: `${namespace}/${key}`, payload: payload };
     };
   };
-  export const currentState = (_: any) => _[namespace];
+  export const currentState = (_: any): State => _[namespace];
 }
 
 const { namespace, currentState } = AppModels;
@@ -77,7 +79,7 @@ const createAction = <K extends keyof Payload>(key: K) => {
 };
 
 const initalState: State = {
-  users: emptyList,
+  users: {},
   group: emptyList,
   currentGroup: '',
 };
@@ -117,24 +119,39 @@ const reducers: Partial<Record<AppModels.ActionType, Reducer<State>>> = {
       return result;
     });
 
+    if (!state.users[payload.group]) {
+      /** 注意这行解构。直接赋值的话immer拦截不了，导致下边的修改直接影响到整体了 */
+      state.users[payload.group] = { ...emptyList };
+    }
+
+    const currentUserCardList = state.users[payload.group];
+
+    if (!currentUserCardList) {
+      return;
+    }
+
     if (payload.pagination) {
-      state.users.pagination = payload.pagination;
-    } else {
-      state.users.pagination = initalState.users.pagination;
+      currentUserCardList.pagination = payload.pagination;
     }
 
     if (payload.pagination && payload.pagination.page > 1) {
       if (payload.pagination.page > 1) {
-        state.users.data = state.users.data.concat(userList);
+        currentUserCardList.data = currentUserCardList.data.concat(userList);
       }
     } else {
-      state.users.data = userList;
+      currentUserCardList.data = userList;
     }
 
     state.currentGroup = payload.group;
   },
   [AppModels.ActionType.getUserlistFail]() {
-    return initalState;
+    //
+  },
+  [AppModels.ActionType.changeGroupOffline](
+    state,
+    { payload }: Action<Payload[AppModels.ActionType.changeGroupOffline]>,
+  ) {
+    state.currentGroup = payload.groupID;
   },
 };
 
@@ -160,16 +177,29 @@ const effects: Partial<Record<AppModels.ActionType, Effect>> = {
       toast.show(e.message);
     }
   },
+  *[AppModels.ActionType.changeGroup](
+    { payload }: Action<Payload[AppModels.ActionType.changeGroup]>,
+    { select, put },
+  ) {
+    const { groupID } = payload;
+    const { users }: AppModels.State = yield select(currentState);
+
+    if (users[groupID]?.data.length) {
+      yield put(createAction(AppModels.ActionType.changeGroupOffline)(payload));
+    } else {
+      yield put(createAction(AppModels.ActionType.getUserlist)(payload));
+    }
+  },
   *[AppModels.ActionType.getUserlist](
     { payload }: Action<Payload[AppModels.ActionType.getUserlist]>,
     { call, put, select, take, race },
   ) {
-    const { group, currentGroup }: State = yield select(currentState);
+    const { group }: State = yield select(currentState);
     const getGroupLoading: State = yield select(
       (_: any) =>
         _.loading.effects[`${namespace}/${AppModels.ActionType.getGroup}`],
     );
-    const { page, pageSize, groupID = currentGroup } = payload;
+    const { page, pageSize, groupID } = payload;
 
     const param: request.userList.ReadParam = {
       page,
@@ -187,7 +217,6 @@ const effects: Partial<Record<AppModels.ActionType, Effect>> = {
         });
 
         if (f) {
-          debugger;
           return;
         }
       }
