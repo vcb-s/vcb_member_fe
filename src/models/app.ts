@@ -99,21 +99,21 @@ const reducers: Partial<Record<AppModels.ActionType, Reducer<State>>> = {
     state,
     { payload }: Action<Payload[AppModels.ActionType.getUserlistSuccess]>,
   ) {
-    const { group } = state;
+    // const { group } = state;
 
-    const groupMap: Map<Group.Item['key'], Group.Item> = new Map();
-    group.data.forEach((group) => {
-      groupMap.set(group.key, group);
-    });
+    // const groupMap: Map<Group.Item['key'], Group.Item> = new Map();
+    // group.data.forEach((group) => {
+    //   groupMap.set(group.key, group);
+    // });
 
     const userList = payload.data.map((user) => {
       const result: UserCard.Item = {
         ...user,
         key: user.id,
-        group: user.group
-          .split(',')
-          .map((id) => groupMap.get(id) || group.data[0])
-          .filter((_) => _),
+        // group: user.group
+        //   .split(',')
+        //   .map((id) => groupMap.get(id) || group.data[0])
+        //   .filter((_) => _),
       };
 
       return result;

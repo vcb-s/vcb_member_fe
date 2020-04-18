@@ -10,11 +10,11 @@ export namespace UserCard {
     nickname: string;
     job: string;
     order: number;
-    group: string;
+    // group: string;
   }
   export interface Item extends Omit<ItemInResponse, 'group'> {
     key: string;
-    group: Group.Item[];
+    // group: Group.Item[];
   }
   export type List = CommonList<Item>;
 }
