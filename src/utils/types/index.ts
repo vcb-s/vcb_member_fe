@@ -1,5 +1,5 @@
-import { EffectsCommandMap } from 'dva';
-import { AnyAction } from 'redux';
+// import { EffectsCommandMap } from 'dva';
+// import { AnyAction } from 'redux';
 
 /**
  * 类型互斥
@@ -30,32 +30,24 @@ export type XOR<T, U> = T | U extends object
   ? (Without<T, U> & U) | (Without<U, T> & T)
   : T | U;
 
-export interface Action<T extends any = any> extends AnyAction {
-  payload: T;
-}
+// export interface Action<T extends any = any> extends AnyAction {
+//   payload: T;
+// }
 
-export type Effect = <A extends Action = Action>(
-  action: A,
-  effects: EffectsCommandMap,
-) => void;
-export type Reducer<S = any, A extends Action = Action> = (
-  state: S,
-  action: A,
-) => void;
+// export type Effect = <A extends Action = Action>(
+//   action: A,
+//   effects: EffectsCommandMap,
+// ) => void;
+// export type Reducer<S = any, A extends Action = Action> = (
+//   state: S,
+//   action: A,
+// ) => void;
 
 export function withPayloadType<T>() {
   return (t: T) => ({ payload: t });
 }
 
-export type Promised<S extends Promise<any>> = S extends Promise<infer RT>
-  ? RT
-  : never;
-
 export enum GO_BOOL {
   yes = 1,
   no = 2,
-}
-
-export function PromisedType<T extends any>(promise: Promise<T>): T {
-  return (promise as any) as T;
 }

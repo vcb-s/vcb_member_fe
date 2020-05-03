@@ -1,15 +1,12 @@
+import { AxiosResponse } from 'axios';
+
 export namespace ResponseData {
-  export interface Base<T extends Record<string, any> = any> {
+  export interface DataContent extends Record<string, any> {}
+
+  export interface Data<D extends DataContent> {
     code: number;
-    data?: T;
+    data: D;
     msg?: string;
   }
-  export interface Ok<T extends Record<string, any>> extends Base<T> {
-    data: T;
-    msg: never;
-  }
-  export interface Error extends Base {
-    data: never;
-    msg: string;
-  }
+  export interface OK<D extends DataContent> extends AxiosResponse<Data<D>> {}
 }

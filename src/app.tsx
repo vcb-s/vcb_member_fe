@@ -1,4 +1,8 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import { SWRConfig } from 'swr';
+import type { ConfigInterface } from 'swr';
+import { StylesProvider } from '@material-ui/core/styles';
+
 import poyfill from '@/utils/asyncPoyfill';
 
 export function render(oldRender: () => any) {
@@ -7,7 +11,16 @@ export function render(oldRender: () => any) {
   });
 }
 const Root: React.FC = function Root({ children }) {
-  return <>{children}</>;
+  const swrConfig = useMemo((): ConfigInterface => {
+    return {
+      revalidateOnFocus: false,
+    };
+  }, []);
+  return (
+    <StylesProvider injectFirst>
+      <SWRConfig value={swrConfig}>{children}</SWRConfig>
+    </StylesProvider>
+  );
 };
 
 export function rootContainer(container: any) {

@@ -6,19 +6,19 @@ import { ResponseData } from './types/ResponseData';
 import { UserCard } from './types/UserCard';
 import { Group } from './types/Group';
 
-const fetch = axios.create({
+const axiosInstance = axios.create({
   baseURL: '/vcbs_member_api',
   withCredentials: false,
 });
 
-fetch.interceptors.request.use((config) => {
+axiosInstance.interceptors.request.use((config) => {
   config.headers['X-Token'] = token.token;
   config.headers['X-RefreshToken'] = token.refreshToken;
 
   return config;
 });
 
-fetch.interceptors.response.use((reponse) => {
+axiosInstance.interceptors.response.use((reponse) => {
   if ('token' in reponse.headers) {
     token.token = reponse.headers['token'];
   }
@@ -34,56 +34,58 @@ interface FetchParam {
   method?: Method;
   data?: any;
 }
-
-const ajax = (param: FetchParam) => {
+export const ajax = (param: FetchParam) => {
   const { url, method = 'GET', data } = param;
-  switch (method) {
-    case 'get':
+  switch (method.toUpperCase()) {
     case 'GET': {
-      return fetch({ url, params: data, method });
+      return axiosInstance({ url, params: data, method });
     }
-    case 'post':
     case 'POST': {
-      return fetch({ url, data, method });
+      return axiosInstance({ url, data, method });
     }
     default: {
-      return fetch({ url, params: data, method: 'GET' });
+      return axiosInstance({ url, params: data, method: 'GET' });
     }
   }
 };
 
 namespace request {
-  export namespace userList {
+  export namespace userCard {
     export interface ReadParam extends Partial<PaginationParam> {
       group: Group.Item['id'];
       retired?: UserCard.Item['retired'];
     }
-    export type ReadResponse = ResponseData.Ok<{
-      res: UserCard.ItemInResponse[];
-      total: number;
-    }>;
-    export const read = (data: ReadParam): AxiosPromise<ReadResponse> => {
+    export interface ReadResponse
+      extends ResponseData.OK<{
+        res: UserCard.ItemInResponse[];
+        total: number;
+      }> {}
+    export const url = '/user/list';
+    export const read = (data: ReadParam): Promise<ReadResponse> => {
       return ajax({
-        url: '/user/list',
+        url,
         data: data,
       });
     };
   }
   export namespace group {
-    export type ReadResponse = ResponseData.Ok<{
-      res: Group.ItemInResponse[];
-      total: number;
-    }>;
-    export const read = (): AxiosPromise<ReadResponse> => {
-      return ajax({
-        url: '/group/list',
-      });
+    export const url = '/group/list';
+    export interface ReadResponse
+      extends ResponseData.OK<{
+        res: Group.ItemInResponse[];
+        total: number;
+      }> {}
+    export const read = (): Promise<ReadResponse> => {
+      return ajax({ url });
     };
   }
 }
 
-export const strictCheck = <T extends ResponseData.Base>(
-  response: AxiosResponse<T>,
+export const strictCheck = <
+  D extends ResponseData.DataContent,
+  T extends ResponseData.OK<D>
+>(
+  response: T,
 ): T => {
   if (response.status !== 200) {
     throw new Error(
@@ -95,7 +97,7 @@ export const strictCheck = <T extends ResponseData.Base>(
     throw new Error(`请求错误：${response.data.msg || '未知错误'}`);
   }
 
-  return response.data;
+  return response;
 };
 
 export { request };

@@ -37,11 +37,6 @@ export default defineConfig({
     'https://cdn.staticfile.org/react-dom/16.13.1/umd/react-dom.production.min.js',
   ],
 
-  dva: {
-    immer: true,
-    hmr: false,
-  },
-
   sass: {
     sassOptions: {
       fiber,

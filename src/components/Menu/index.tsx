@@ -1,12 +1,13 @@
-import React, { useMemo, useCallback } from 'react';
-import Select, { Option } from '@material/react-select';
+import React, { useMemo, useCallback, useState } from 'react';
 
-import { Group } from '@/utils/types/Group';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
 
-import '@material/react-list/index.scss';
-import '@material/react-menu-surface/index.scss';
-import '@material/react-menu/index.scss';
-import '@material/react-select/index.scss';
+import type { Group } from '@/utils/types/Group';
+
+import styles from './index.scss';
 
 interface Props {
   loading: boolean;
@@ -15,7 +16,7 @@ interface Props {
   onChange: (item: Group.Item['id']) => void;
 }
 
-export const Menu: React.FC<Props> = React.memo(function Button(props) {
+export const Menu: React.FC<Props> = React.memo(function Menu(props) {
   const { loading, selected, groupItems, onChange } = props;
 
   const selectLabel = useMemo(() => {
@@ -26,24 +27,25 @@ export const Menu: React.FC<Props> = React.memo(function Button(props) {
   }, [loading]);
 
   const changeHandle = useCallback(
-    (index, item) => onChange(item.getAttribute('data-value')),
+    (evt: React.ChangeEvent<{ name?: string; value: unknown }>) =>
+      onChange(`${evt.target.value}`),
     [onChange],
   );
 
   return (
-    <Select
-      enhanced
-      outlined
-      label={selectLabel}
-      value={selected}
-      onEnhancedChange={changeHandle}
-      disabled={loading}
-    >
-      {groupItems.map((group) => (
-        <Option key={group.key} value={group.id}>
-          {group.name}
-        </Option>
-      ))}
-    </Select>
+    <FormControl variant='outlined' className={styles.minWidthSelector}>
+      <InputLabel>{selectLabel}</InputLabel>
+      <Select
+        value={loading ? '' : selected}
+        onChange={changeHandle}
+        label='组别'
+      >
+        {groupItems.map((group) => (
+          <MenuItem key={group.key} value={group.id}>
+            {group.name}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
   );
 });

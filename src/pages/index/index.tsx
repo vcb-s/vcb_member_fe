@@ -1,67 +1,56 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useHistory, useLocation } from 'umi';
+import React, { useCallback, useEffect } from 'react';
+import { produce } from 'immer';
+import { stringify, parse } from 'querystring';
 
 import WaterFall from '@/components/waterfall/async';
 import Footer from '@/components/footer/async';
 import Loading from '@/components/loading';
 import GroupSelect from '@/components/group_select/async';
 import { Group } from '@/utils/types/Group';
-
-import { AppModels } from '@/models/app';
+import { useCards } from '@/utils/services';
 
 import './index.scss';
 
-export default React.memo(function IndexPage() {
-  const pageState = useSelector(AppModels.currentState);
-  const loading: boolean = useSelector(
-    (_: any) => _.loading.models[AppModels.namespace],
-  );
+type PageParam = {
+  group?: string;
+};
 
-  const dispatch = useDispatch();
-  const { users, group, currentGroup } = pageState;
+export default React.memo(function IndexPage() {
+  const history = useHistory();
+  const location = useLocation();
+  // @ts-ignore
+  const params: PageParam = location.query;
+
+  const navToGroup = useCallback(
+    (groupID: string) => {
+      history.push({
+        pathname: history.location.pathname,
+        search: stringify(
+          produce(params, (params) => {
+            params.group = groupID;
+          }),
+        ),
+      });
+    },
+    [history, params],
+  );
 
   useEffect(() => {
-    dispatch(
-      AppModels.createAction(AppModels.ActionType.getUserlist)({
-        groupID: '1',
-      }),
-    );
-  }, [dispatch]);
+    if (!params.group) {
+      navToGroup('1');
+    }
+  }, [navToGroup, params.group]);
 
-  const groupChangeHandle = useCallback(
-    (groupID: Group.Item['id']) => {
-      dispatch(
-        AppModels.createAction(AppModels.ActionType.changeGroup)({ groupID }),
-      );
-    },
-    [dispatch],
-  );
-
-  const maxLengthOfData = useMemo(() => {
-    let maxLength = 0;
-    Object.keys(users).forEach((group) => {
-      maxLength = Math.max(users[group]?.data.length || 0, maxLength);
-    });
-
-    return maxLength;
-  }, [users]);
-
-  const cardList = useMemo(() => {
-    return users[currentGroup]?.data || [];
-  }, [currentGroup, users]);
+  const [cardList, error, loading] = useCards(params.group || '');
 
   return (
     <div className='modules_member_index'>
       <div className='modules_member_index_title'>VCB-Studio 社员一览</div>
 
-      <Loading show={loading && !maxLengthOfData} />
+      <Loading show={loading} />
 
-      <GroupSelect
-        loading={loading}
-        data={group}
-        current={currentGroup}
-        onChange={groupChangeHandle}
-      />
+      <GroupSelect current={params.group || ''} onChange={navToGroup} />
 
       <div style={{ height: '20px' }} />
 
