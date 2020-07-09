@@ -25,7 +25,18 @@ const WaterFallListItem: WaterFallListItem = ({
 }) => {
   const [avast, setAvast] = useState('');
   const [ref, inView] = useInView();
-  const [innerSize, setInnerSize] = useState<Size>(size);
+  const [forceSize, setForceSize] = useState<Size | null>(null);
+
+  /** 点击头像是放大nano的 */
+  const avastClickHandle = useCallback(() => {
+    if (size !== Size.nano) {
+      return;
+    }
+
+    setForceSize((currentSize) => (currentSize ? Size.nano : null));
+  }, [size]);
+
+  const innerSize = useMemo(() => forceSize || size, [forceSize, size]);
 
   /** 当inView之后就设置加载图片 */
   useEffect(() => {
@@ -35,42 +46,25 @@ const WaterFallListItem: WaterFallListItem = ({
   }, [data.avast, inView]);
 
   /** 触发重排逻辑 */
-  const imgLoadedHandle = useCallback(
-    (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-      if (size !== Size.nano) {
-        onResize && onResize();
-      }
-    },
-    [size, onResize],
-  );
+  const imgLoadedHandle = useCallback(() => {
+    if (size !== Size.nano) {
+      onResize && onResize();
+    }
+  }, [size, onResize]);
 
   /** 图片加载错误fallback */
-  const errorHandle = useCallback(
-    (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-      const errmsg = avast.replace(
-        /^(.+\/)(.+)(\.)(.+)$/,
-        `图片加载失败：$2 - $4\n$2$3$4`,
-      );
-      console.warn(errmsg);
-      onResize && onResize();
-    },
-    [avast, onResize],
-  );
-
-  /** 点击头像 */
-  const avastClickHandle = useCallback(() => {
-    if (size !== Size.nano) {
-      return;
-    }
-
-    setInnerSize((currentSize) =>
-      currentSize === Size.normal ? size : Size.normal,
+  const errorHandle = useCallback(() => {
+    const errmsg = avast.replace(
+      /^(.+\/)(.+)(\.)(.+)$/,
+      `图片加载失败：$2 - $4\n$2$3$4`,
     );
-  }, [size]);
+    console.warn(errmsg);
+    onResize && onResize();
+  }, [avast, onResize]);
 
   useEffect(() => {
     onResize && onResize();
-  }, [innerSize, onResize]);
+  }, [forceSize, onResize]);
 
   return (
     <div

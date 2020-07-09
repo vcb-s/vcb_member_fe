@@ -61,10 +61,14 @@ const WaterFall: React.FC<WaterFallProps> = React.memo(function WaterFall(
     const node = masonryNodeRef.current;
     if (node) {
       const masonryInstance = new masonry(node, {
+        // 选择器
         itemSelector: '.grid-item',
-        // columnWidth: innerSize === Size.nano ? 100 : 240,
+        // 间隔
         gutter: 15,
+        // 容器符合内容宽度方便居中
         fitWidth: true,
+        // 设置fitWidth后 columnWidth 需要设置为 数字宽度
+        columnWidth: innerSize === Size.nano ? 100 : 240,
       });
 
       masonryInstanceRef.current = masonryInstance;
@@ -77,7 +81,7 @@ const WaterFall: React.FC<WaterFallProps> = React.memo(function WaterFall(
         masonryInstanceRef.current = null;
       };
     }
-  }, [data]);
+  }, [data, innerSize]);
 
   return (
     <div className='com_waterfall_container'>
