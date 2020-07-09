@@ -1,9 +1,9 @@
-import React, { FC, useState, useEffect, useCallback } from 'react';
+import React, { FC, useState, useEffect, useCallback, useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { useMedia } from 'react-use';
 import classnames from 'classnames';
 
 import { GO_BOOL } from '@/utils/types';
+import { Size } from '@/utils/types/waterfall_size';
 import { UserCard } from '@/utils/types/UserCard';
 
 import './index.scss';
@@ -11,31 +11,40 @@ import './index.scss';
 interface WaterFallListItemProps {
   data: UserCard.Item;
   className?: string;
-  onResize?: (e: React.SyntheticEvent<HTMLImageElement, Event>) => void;
+  onResize?: () => void;
+
+  /** 布局方式 */
+  size: Size;
 }
 type WaterFallListItem = FC<WaterFallListItemProps>;
 const WaterFallListItem: WaterFallListItem = ({
   data,
   className = '',
   onResize,
+  size,
 }) => {
   const [avast, setAvast] = useState('');
   const [ref, inView] = useInView();
-  const isWide = useMedia('(min-width: 1080px)');
+  const [innerSize, setInnerSize] = useState<Size>(size);
 
+  /** 当inView之后就设置加载图片 */
   useEffect(() => {
     if (inView) {
       setAvast(data.avast);
     }
   }, [data.avast, inView]);
 
+  /** 触发重排逻辑 */
   const imgLoadedHandle = useCallback(
     (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-      onResize && onResize(e);
+      if (size !== Size.nano) {
+        onResize && onResize();
+      }
     },
-    [onResize],
+    [size, onResize],
   );
 
+  /** 图片加载错误fallback */
   const errorHandle = useCallback(
     (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
       const errmsg = avast.replace(
@@ -43,18 +52,33 @@ const WaterFallListItem: WaterFallListItem = ({
         `图片加载失败：$2 - $4\n$2$3$4`,
       );
       console.warn(errmsg);
-      onResize && onResize(e);
+      onResize && onResize();
     },
     [avast, onResize],
   );
+
+  /** 点击头像 */
+  const avastClickHandle = useCallback(() => {
+    if (size !== Size.nano) {
+      return;
+    }
+
+    setInnerSize((currentSize) =>
+      currentSize === Size.normal ? size : Size.normal,
+    );
+  }, [size]);
+
+  useEffect(() => {
+    onResize && onResize();
+  }, [innerSize, onResize]);
 
   return (
     <div
       className={classnames({
         com_waterfall_item: true,
+        [innerSize]: true,
         [className]: !!className,
         retired: data.retired === GO_BOOL.yes,
-        small: !isWide,
       })}
       ref={ref}
     >
@@ -63,6 +87,7 @@ const WaterFallListItem: WaterFallListItem = ({
           src={avast}
           onLoad={imgLoadedHandle}
           onError={errorHandle}
+          onClick={avastClickHandle}
           referrerPolicy='no-referrer'
         />
       </div>

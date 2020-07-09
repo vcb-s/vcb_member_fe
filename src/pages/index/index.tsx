@@ -7,8 +7,8 @@ import WaterFall from '@/components/waterfall/async';
 import Footer from '@/components/footer/async';
 import Loading from '@/components/loading';
 import GroupSelect from '@/components/group_select/async';
-import { Group } from '@/utils/types/Group';
 import { useCards } from '@/utils/services';
+import { Size } from '@/utils/types/waterfall_size';
 
 import './index.scss';
 
@@ -54,7 +54,7 @@ export default React.memo(function IndexPage() {
 
       <div style={{ height: '20px' }} />
 
-      <WaterFall data={cardList} />
+      <WaterFall data={cardList} size={Size.nano} />
       <Footer />
     </div>
   );
