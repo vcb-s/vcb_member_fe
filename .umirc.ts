@@ -8,7 +8,7 @@ export default defineConfig({
 
   hash: true,
   dynamicImport: {},
-  forkTSCheker: {},
+  forkTSChecker: {},
   nodeModulesTransform: { type: 'none' },
   favicon: '/assets/favicon.ico',
 
