@@ -79,13 +79,21 @@ const cardAdaper = (
 };
 
 /** 用户卡片 */
-export const useCards = function (
-  group: request.userCard.ReadParam['group'],
-): [UserCard.Item[], LoadFail, Loading] {
+export const useCards = function ({
+  group,
+  IDS,
+}: {
+  group?: request.userCard.ReadParam['group'];
+  IDS?: NonNullable<request.userCard.ReadParam['IDS']>;
+}): [UserCard.Item[], LoadFail, Loading] {
   /**　这里故意不使用依赖刷新 */
-  const { data: userCards, error: userCardsError, isValidating } = useSWR(
-    group ? [request.userCard.url, group] : null,
-    (url, group) => request.userCard.read({ group }),
+  const {
+    data: userCards,
+    error: userCardsError,
+    isValidating,
+  } = useSWR(
+    group || IDS ? [request.userCard.url, group, IDS] : null,
+    (url, group) => request.userCard.read({ group, IDS }),
   );
   /** 校验错误 */
   const error = useMemo((): LoadFail => {

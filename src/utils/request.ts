@@ -52,8 +52,9 @@ export const ajax = (param: FetchParam) => {
 namespace request {
   export namespace userCard {
     export interface ReadParam extends Partial<PaginationParam> {
-      group: Group.Item['id'];
+      group?: Group.Item['id'];
       retired?: UserCard.Item['retired'];
+      IDS?: UserCard.Item['id'][];
     }
     export interface ReadResponse
       extends ResponseData.OK<{

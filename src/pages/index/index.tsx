@@ -42,7 +42,7 @@ export default React.memo(function IndexPage() {
     }
   }, [navToGroup, params.group]);
 
-  const [cardList, error, loading] = useCards(params.group || '');
+  const [cardList, , loading] = useCards({ group: params.group || '' });
 
   return (
     <div className='modules_member_index'>
