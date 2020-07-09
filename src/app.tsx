@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import { SWRConfig } from 'swr';
 import type { ConfigInterface } from 'swr';
-import { StylesProvider } from '@material-ui/core/styles';
 
 import poyfill from '@/utils/asyncPoyfill';
 
@@ -16,11 +15,7 @@ const Root: React.FC = function Root({ children }) {
       revalidateOnFocus: false,
     };
   }, []);
-  return (
-    <StylesProvider injectFirst>
-      <SWRConfig value={swrConfig}>{children}</SWRConfig>
-    </StylesProvider>
-  );
+  return <SWRConfig value={swrConfig}>{children}</SWRConfig>;
 };
 
 export function rootContainer(container: any) {

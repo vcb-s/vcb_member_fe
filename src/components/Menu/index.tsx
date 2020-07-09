@@ -1,5 +1,6 @@
 import React, { useMemo, useCallback, useState } from 'react';
 
+import { StylesProvider } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
@@ -16,7 +17,7 @@ interface Props {
   onChange: (item: Group.Item['id']) => void;
 }
 
-export const Menu: React.FC<Props> = React.memo(function Menu(props) {
+const Menu: React.FC<Props> = function Menu(props) {
   const { loading, selected, groupItems, onChange } = props;
 
   const selectLabel = useMemo(() => {
@@ -48,4 +49,14 @@ export const Menu: React.FC<Props> = React.memo(function Menu(props) {
       </Select>
     </FormControl>
   );
+};
+
+const MenuWithMenu: React.FC<Props> = React.memo(function MenuWithMenu(props) {
+  return (
+    <StylesProvider injectFirst>
+      <Menu {...props} />
+    </StylesProvider>
+  );
 });
+
+export { MenuWithMenu as Menu };
