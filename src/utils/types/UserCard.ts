@@ -1,4 +1,4 @@
-import { Group } from './Group';
+// import { Group } from './Group';
 import { GO_BOOL } from './index';
 import { CommonList } from './CommonList';
 export namespace UserCard {
