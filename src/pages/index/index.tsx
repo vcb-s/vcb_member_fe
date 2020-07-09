@@ -54,7 +54,7 @@ export default React.memo(function IndexPage() {
 
       <div style={{ height: '20px' }} />
 
-      <WaterFall data={cardList} size={Size.nano} />
+      <WaterFall data={cardList} />
       <Footer />
     </div>
   );
