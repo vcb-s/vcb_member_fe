@@ -15,6 +15,8 @@ export default React.memo(function ExtenalPage() {
     params.IDS,
   ]);
 
+  // hi28kmhfr4,hi28n4ds75,hi28jb1d6p,hhvah8ysci
+
   console.log('what is ids', ids);
 
   return <>hello</>;
