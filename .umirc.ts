@@ -1,6 +1,8 @@
 import { defineConfig } from 'umi';
 import fiber from 'fibers';
 
+const { PROXY_TARGET = 'https://vcb-s.com' } = process.env;
+
 export default defineConfig({
   title: 'vcb-s成员介绍',
   base: '/vcbs_member/',
@@ -19,7 +21,7 @@ export default defineConfig({
 
   proxy: {
     '/vcbs_member_api': {
-      target: 'https://vcb-s.com',
+      target: PROXY_TARGET,
       changeOrigin: true,
     },
   },
