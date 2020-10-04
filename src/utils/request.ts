@@ -61,7 +61,7 @@ namespace request {
         res: UserCard.ItemInResponse[];
         total: number;
       }> {}
-    export const url = '/user/list';
+    export const url = '/user-card/list';
     export const read = (data: ReadParam): Promise<ReadResponse> => {
       return ajax({
         url,

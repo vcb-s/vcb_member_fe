@@ -4,7 +4,7 @@ import { useAsyncFn } from 'react-use';
 import { webpDetect } from '@/utils/webpDetect';
 import { UserCard } from '@/utils/types/UserCard';
 import { Group } from '@/utils/types/Group';
-import { request, ajax, strictCheck } from './request';
+import { request, strictCheck } from './request';
 
 export type LoadFail = Error | undefined;
 export type Loading = boolean;
