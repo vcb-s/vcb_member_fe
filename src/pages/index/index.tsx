@@ -1,14 +1,12 @@
 import { useHistory, useLocation } from 'umi';
 import React, { useCallback, useEffect } from 'react';
-import { produce } from 'immer';
-import { stringify, parse } from 'querystring';
+import { stringify } from 'querystring';
 
 import WaterFall from '@/components/waterfall/async';
 import Footer from '@/components/footer/async';
 import Loading from '@/components/loading';
 import GroupSelect from '@/components/group_select/async';
 import { useCards } from '@/utils/services';
-import { Size } from '@/utils/types/waterfall_size';
 
 import './index.scss';
 
@@ -26,11 +24,10 @@ export default React.memo(function IndexPage() {
     (groupID: string) => {
       history.push({
         pathname: history.location.pathname,
-        search: stringify(
-          produce(params, (params) => {
-            params.group = groupID;
-          }),
-        ),
+        search: stringify({
+          ...params,
+          group: groupID,
+        }),
       });
     },
     [history, params],

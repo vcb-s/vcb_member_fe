@@ -31,13 +31,18 @@ export default defineConfig({
     react: 'window.React',
     'react-dom': 'window.ReactDOM',
     axios: 'window.axios',
+    'masonry-layout': 'window.Masonry',
   },
 
   headScripts: [
     // flags=always
     'https://polyfill.alicdn.com/polyfill.min.js?flags=gated&features=URL%2CURLSearchParams%2Cfetch%2CMap%2CWeakMap%2CSet%2CWeakSet',
+  ],
 
+  scripts: [
+    'https://cdn.staticfile.org/masonry/4.2.2/masonry.pkgd.min.js',
     'https://cdn.staticfile.org/axios/0.19.2/axios.min.js',
+
     'https://cdn.staticfile.org/react/16.13.1/umd/react.production.min.js',
     'https://cdn.staticfile.org/react-dom/16.13.1/umd/react-dom.production.min.js',
   ],

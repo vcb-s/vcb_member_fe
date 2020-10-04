@@ -1,6 +1,5 @@
-import { useMemo, useState, useEffect, useRef } from 'react';
-import useSWR from 'swr';
-import { produce } from 'immer';
+import { useEffect, useMemo } from 'react';
+import { useAsyncFn } from 'react-use';
 
 import { webpDetect } from '@/utils/webpDetect';
 import { UserCard } from '@/utils/types/UserCard';
@@ -19,34 +18,33 @@ const groupAdapeter = (group: Group.ItemInResponse): Group.Item => {
 
 /** 组别 */
 export const useGroup = function (): [Group.Item[], LoadFail, Loading] {
-  const { data, error, isValidating } = useSWR(
-    request.group.url,
-    request.group.read,
-  );
+  const [{ value, loading, error }, fetch] = useAsyncFn(async () => {
+    return await request.group.read();
+  }, []);
+
+  useEffect(() => {
+    fetch();
+  }, [fetch]);
 
   const groups = useMemo((): Group.Item[] => {
-    if (error || !data) {
+    if (error || !value) {
       return [];
     }
 
     try {
-      strictCheck(data);
+      strictCheck(value);
     } catch (e) {
       return [];
     }
 
     return [
-      ...(data?.data.data.res.map(groupAdapeter) || []),
+      ...(value?.data.data.res.map(groupAdapeter) || []),
       { key: '-1', id: '-1', name: '一家人就要齐齐整整' },
     ];
-  }, [data, error]);
+  }, [value, error]);
 
-  return [groups, new Error(error), isValidating];
+  return [groups, new Error(error?.message || ''), loading];
 };
-
-interface UserCardInMap {
-  [groupID: string]: UserCard.Item[];
-}
 
 let isSupportWebp = false;
 (async () => {
@@ -86,18 +84,20 @@ export const useCards = function ({
   group?: request.userCard.ReadParam['group'];
   IDS?: NonNullable<request.userCard.ReadParam['IDS']>;
 }): [UserCard.Item[], LoadFail, Loading] {
-  /**　这里故意不使用依赖刷新 */
-  const {
-    data: userCards,
-    error: userCardsError,
-    isValidating,
-  } = useSWR(
-    group || IDS ? [request.userCard.url, group, IDS] : null,
-    (url, group) => request.userCard.read({ group, IDS }),
-  );
+  const [
+    { value: userCards, error: userCardsError, loading },
+    fetch,
+  ] = useAsyncFn(async () => {
+    return await request.userCard.read({ group, IDS });
+  }, [group, IDS]);
+
+  useEffect(() => {
+    fetch();
+  }, [fetch]);
+
   /** 校验错误 */
   const error = useMemo((): LoadFail => {
-    if (isValidating || !userCards) {
+    if (loading || !userCards) {
       return;
     }
     if (userCardsError) {
@@ -109,12 +109,12 @@ export const useCards = function ({
     } catch (e) {
       return e;
     }
-  }, [isValidating, userCards, userCardsError]);
+  }, [loading, userCards, userCardsError]);
 
   // 产生最后的用户数组
   const result = useMemo((): UserCard.Item[] => {
     /** 数据错误标志未清空 或正在loading 时不刷新数据 */
-    if (error || isValidating || !userCards) {
+    if (error || loading || !userCards) {
       return [];
     }
     return userCards.data.data.res.map(
@@ -122,7 +122,7 @@ export const useCards = function ({
         return cardAdaper(item);
       },
     );
-  }, [error, isValidating, userCards]);
+  }, [error, loading, userCards]);
 
-  return [result, error, isValidating];
+  return [result, error, loading];
 };
