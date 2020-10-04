@@ -1,11 +1,12 @@
 {
   "compilerOptions": {
-    "jsx": "react",
+    "jsx": "preserve",
     "target": "esnext",
     "module": "esnext",
     "moduleResolution": "node",
     "esModuleInterop": true,
     "importHelpers": true,
+    "allowSyntheticDefaultImports": true,
 
     "sourceMap": true,
     "baseUrl": ".",
@@ -13,9 +14,7 @@
     "paths": {
       "@/*": ["src/*"],
       "@@/*": ["src/.umi/*"]
-    },
-    "allowSyntheticDefaultImports": true,
-    "preserveConstEnums": true
+    }
   },
   "include": ["src", ".umirc.ts"]
 }
