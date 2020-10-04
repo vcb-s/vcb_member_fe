@@ -1,6 +1,7 @@
 import Loadable from 'react-loadable';
+import { Null } from '@/components/Null';
 
 export default Loadable({
-  loader: () => import('.'),
-  loading: () => null,
+  loader: () => import('.').catch(() => Null),
+  loading: Null,
 });
