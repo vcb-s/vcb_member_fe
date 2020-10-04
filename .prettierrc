@@ -3,11 +3,5 @@
   "trailingComma": "all",
   "semi": true,
   "jsxSingleQuote": true,
-  "printWidth": 80,
-  "overrides": [
-    {
-      "files": ".prettierrc",
-      "options": { "parser": "json" }
-    }
-  ]
+  "printWidth": 80
 }
