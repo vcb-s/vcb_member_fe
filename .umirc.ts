@@ -4,10 +4,16 @@ import fiber from 'fibers';
 
 const { PROXY_TARGET = 'https://vcb-s.com' } = process.env;
 
+const __DEV__ = process.env.NODE_ENV === 'development';
+
+const cacheHost = 'https://cache.cswsadlab.com';
+const base = '/vcbs_member/';
+const publicPath = __DEV__ ? base : `${cacheHost}${base}`;
+
 export default defineConfig({
   title: 'vcb-s成员介绍',
   base: '/vcbs_member/',
-  publicPath: '/vcbs_member/',
+  publicPath: publicPath,
 
   hash: true,
   dynamicImport: {},
