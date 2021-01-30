@@ -40,11 +40,18 @@ export default defineConfig({
   ],
 
   scripts: [
-    'https://cdn.staticfile.org/masonry/4.2.2/masonry.pkgd.min.js',
-    'https://cdn.staticfile.org/axios/0.19.2/axios.min.js',
+    'https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js',
+    'https://cdn.jsdelivr.net/npm/axios@0.21.1/dist/axios.min.js',
 
-    'https://cdn.staticfile.org/react/16.13.1/umd/react.production.min.js',
-    'https://cdn.staticfile.org/react-dom/16.13.1/umd/react-dom.production.min.js',
+    'https://cdn.jsdelivr.net/npm/react@17.0.1/umd/react.production.min.js',
+    'https://cdn.jsdelivr.net/npm/react-dom@17.0.1/umd/react-dom.production.min.js',
+  ],
+
+  links: [
+    {
+      rel: 'dns-prefetch',
+      href: 'https://cdn.jsdelivr.net',
+    },
   ],
 
   sass: {

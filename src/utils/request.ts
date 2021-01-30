@@ -1,6 +1,5 @@
-import axios, { Method, AxiosResponse, AxiosPromise } from 'axios';
+import axios, { Method } from 'axios';
 
-import { token } from './token';
 import { PaginationParam } from './types/Pagination';
 import { ResponseData } from './types/ResponseData';
 import { UserCard } from './types/UserCard';
@@ -9,24 +8,6 @@ import { Group } from './types/Group';
 const axiosInstance = axios.create({
   baseURL: '/vcbs_member_api',
   withCredentials: false,
-});
-
-axiosInstance.interceptors.request.use((config) => {
-  config.headers['X-Token'] = token.token;
-  config.headers['X-RefreshToken'] = token.refreshToken;
-
-  return config;
-});
-
-axiosInstance.interceptors.response.use((reponse) => {
-  if ('token' in reponse.headers) {
-    token.token = reponse.headers['token'];
-  }
-  if ('refreshToken' in reponse.headers) {
-    token.refreshToken = reponse.headers['refreshToken'];
-  }
-
-  return reponse;
 });
 
 interface FetchParam {
@@ -102,4 +83,3 @@ export const strictCheck = <
 };
 
 export { request };
-export default request;
