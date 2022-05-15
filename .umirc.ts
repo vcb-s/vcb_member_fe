@@ -1,12 +1,11 @@
 import { defineConfig } from 'umi';
-import fiber from 'fibers';
 // import { writeFileSync } from 'fs';
 
 const { PROXY_TARGET = 'https://vcb-s.com' } = process.env;
 
 const __DEV__ = process.env.NODE_ENV === 'development';
 
-const cacheHost = 'https://cache.cswsadlab.com';
+const cacheHost = '';
 const base = '/vcbs_member/';
 const publicPath = __DEV__ ? base : `${cacheHost}${base}`;
 
@@ -17,7 +16,7 @@ export default defineConfig({
 
   hash: true,
   dynamicImport: {},
-  forkTSChecker: {},
+  // forkTSChecker: {},
   nodeModulesTransform: { type: 'none' },
   favicon: '/assets/favicon.ico',
 
@@ -62,7 +61,6 @@ export default defineConfig({
 
   sass: {
     sassOptions: {
-      fiber,
     },
   },
 

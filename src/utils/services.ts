@@ -6,7 +6,7 @@ import { UserCard } from '@/utils/types/UserCard';
 import { Group } from '@/utils/types/Group';
 import { request, strictCheck } from './request';
 
-export type LoadFail = Error | undefined;
+export type LoadFail = Error | undefined | unknown;
 export type Loading = boolean;
 
 const groupAdapeter = (group: Group.ItemInResponse): Group.Item => {
@@ -60,7 +60,7 @@ const cardAvastAdaper = (avast: string): string => {
       avast = `${avast.replace(/^(.+)(\..+?)$/, '$1@600$2')}`;
     }
 
-    avast = `https://cache.cswsadlab.com/vcbs_member/uploads/${avast}`;
+    avast = `https://vcb-s.com/vcbs_member/uploads/${avast}`;
   }
 
   return avast;
