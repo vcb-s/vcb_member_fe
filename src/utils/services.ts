@@ -1,10 +1,10 @@
-import { useEffect, useMemo } from 'react';
-import { useAsyncFn } from 'react-use';
+import { useEffect, useMemo } from "react";
+import { useAsyncFn } from "react-use";
 
-import { webpDetect } from '@/utils/webpDetect';
-import { UserCard } from '@/utils/types/UserCard';
-import { Group } from '@/utils/types/Group';
-import { request, strictCheck } from './request';
+import { webpDetect } from "@/utils/webpDetect";
+import { UserCard } from "@/utils/types/UserCard";
+import { Group } from "@/utils/types/Group";
+import { request, strictCheck } from "./request";
 
 export type LoadFail = Error | undefined | unknown;
 export type Loading = boolean;
@@ -39,11 +39,11 @@ export const useGroup = function (): [Group.Item[], LoadFail, Loading] {
 
     return [
       ...(value?.data.data.res.map(groupAdapeter) || []),
-      { key: '-1', id: '-1', name: '一家人就要齐齐整整' },
+      { key: "-1", id: "-1", name: "一家人就要齐齐整整" },
     ];
   }, [value, error]);
 
-  return [groups, new Error(error?.message || ''), loading];
+  return [groups, new Error(error?.message || ""), loading];
 };
 
 let isSupportWebp = false;
@@ -52,12 +52,12 @@ let isSupportWebp = false;
 })();
 
 const cardAvastAdaper = (avast: string): string => {
-  if (avast.indexOf('//') === -1) {
+  if (avast.indexOf("//") === -1) {
     // 限定只优化 jpg/png 格式，其他格式如gif什么的就原图展现
     if (/[\.(jpg)|(png)]$/.test(avast) && isSupportWebp) {
-      avast = `${avast.replace(/(.+)\..+?$/, '$1')}@600.webp`;
+      avast = `${avast.replace(/(.+)\..+?$/, "$1")}@600.webp`;
     } else if (!/[\.(gif)]$/.test(avast)) {
-      avast = `${avast.replace(/^(.+)(\..+?)$/, '$1@600$2')}`;
+      avast = `${avast.replace(/^(.+)(\..+?)$/, "$1@600$2")}`;
     }
 
     avast = `https://vcb-s.com/vcbs_member/uploads/${avast}`;
@@ -66,9 +66,7 @@ const cardAvastAdaper = (avast: string): string => {
   return avast;
 };
 
-const cardAdaper = (
-  card: UserCard.ItemInResponse | UserCard.Item,
-): UserCard.Item => {
+const cardAdaper = (card: UserCard.ItemInResponse | UserCard.Item): UserCard.Item => {
   return {
     ...card,
     key: card.id,
@@ -81,13 +79,10 @@ export const useCards = function ({
   group,
   IDS,
 }: {
-  group?: request.userCard.ReadParam['group'];
-  IDS?: NonNullable<request.userCard.ReadParam['IDS']>;
+  group?: request.userCard.ReadParam["group"];
+  IDS?: NonNullable<request.userCard.ReadParam["IDS"]>;
 }): [UserCard.Item[], LoadFail, Loading] {
-  const [
-    { value: userCards, error: userCardsError, loading },
-    fetch,
-  ] = useAsyncFn(async () => {
+  const [{ value: userCards, error: userCardsError, loading }, fetch] = useAsyncFn(async () => {
     return await request.userCard.read({ group, IDS });
   }, [group, IDS]);
 
@@ -117,11 +112,9 @@ export const useCards = function ({
     if (error || loading || !userCards) {
       return [];
     }
-    return userCards.data.data.res.map(
-      (item): UserCard.Item => {
-        return cardAdaper(item);
-      },
-    );
+    return userCards.data.data.res.map((item): UserCard.Item => {
+      return cardAdaper(item);
+    });
   }, [error, loading, userCards]);
 
   return [result, error, loading];

@@ -1,21 +1,21 @@
-import React, { FunctionComponent, memo } from 'react'
+import React, { FunctionComponent, memo } from "react";
 
-import loadingIcon from '@/assets/loading.svg'
-import './index.scss'
+import loadingIcon from "@/assets/loading.svg";
+import "./index.scss";
 
 interface Props {
-  show?: boolean
+  show?: boolean;
 }
 const Loading: FunctionComponent<Props> = ({ show = true }) => {
   if (!show) {
-    return null
+    return null;
   }
 
   return (
-    <div className='com_loadingWrap'>
-      <img className='com_loading' src={loadingIcon} alt='' />
+    <div className="com_loadingWrap">
+      <img className="com_loading" src={loadingIcon} alt="" />
     </div>
-  )
-}
+  );
+};
 
-export default memo(Loading)
+export default memo(Loading);

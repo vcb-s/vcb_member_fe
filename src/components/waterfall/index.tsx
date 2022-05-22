@@ -1,13 +1,13 @@
-import React, { useEffect, useCallback, useMemo } from 'react';
-import masonry from 'masonry-layout';
-import { useMedia } from 'react-use';
+import React, { useEffect, useCallback, useMemo } from "react";
+import masonry from "masonry-layout";
+import { useMedia } from "react-use";
 
-import { UserCard } from '@/utils/types/UserCard';
-import { WaterFallListItem } from './item';
+import { UserCard } from "@/utils/types/UserCard";
+import { WaterFallListItem } from "./item";
 
-import { Size } from '@/utils/types/waterfall_size';
+import { Size } from "@/utils/types/waterfall_size";
 
-import './index.scss';
+import "./index.scss";
 
 interface WaterFallProps {
   data: UserCard.Item[];
@@ -17,15 +17,13 @@ interface WaterFallProps {
 }
 
 /** 瀑布容器 */
-const WaterFall: React.FC<WaterFallProps> = React.memo(function WaterFall(
-  props,
-) {
+const WaterFall: React.FC<WaterFallProps> = React.memo(function WaterFall(props) {
   const { data, size } = props;
 
   const masonryNodeRef: React.RefObject<HTMLDivElement> = React.useRef(null);
   const masonryInstanceRef = React.useRef<null | Record<string, any>>(null);
   const masonryUpdateDelayRef = React.useRef<number>(0);
-  const isWide = useMedia('(min-width: 1080px)');
+  const isWide = useMedia("(min-width: 1080px)");
 
   /** 混合判断逻辑后的size取值 */
   const innerSize = useMemo(() => {
@@ -62,7 +60,7 @@ const WaterFall: React.FC<WaterFallProps> = React.memo(function WaterFall(
     if (node) {
       const masonryInstance = new masonry(node, {
         // 选择器
-        itemSelector: '.grid-item',
+        itemSelector: ".grid-item",
         // 间隔
         gutter: 15,
         // 容器符合内容宽度方便居中
@@ -84,12 +82,12 @@ const WaterFall: React.FC<WaterFallProps> = React.memo(function WaterFall(
   }, [data, innerSize]);
 
   return (
-    <div className='com_waterfall_container'>
-      <div className='com_waterfall_list' ref={masonryNodeRef}>
+    <div className="com_waterfall_container">
+      <div className="com_waterfall_list" ref={masonryNodeRef}>
         {data.map((item) => (
           <WaterFallListItem
             key={item.id}
-            className='grid-item'
+            className="grid-item"
             data={item}
             onResize={relayoutHandle}
             size={innerSize}

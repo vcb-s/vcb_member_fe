@@ -1,5 +1,5 @@
 export enum Size {
-  normal = 'normal',
-  small = 'small',
-  nano = 'nano',
+  normal = "normal",
+  small = "small",
+  nano = "nano",
 }

@@ -1,6 +1,6 @@
 // import { Group } from './Group';
-import { GO_BOOL } from './index';
-import { CommonList } from './CommonList';
+import { GO_BOOL } from "./index";
+import { CommonList } from "./CommonList";
 export namespace UserCard {
   export interface ItemInResponse {
     id: string;
@@ -12,7 +12,7 @@ export namespace UserCard {
     order: number;
     // group: string;
   }
-  export interface Item extends Omit<ItemInResponse, 'group'> {
+  export interface Item extends Omit<ItemInResponse, "group"> {
     key: string;
     // group: Group.Item[];
   }

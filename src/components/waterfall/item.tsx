@@ -1,12 +1,12 @@
-import React, { FC, useState, useEffect, useCallback, useMemo } from 'react';
-import { useInView } from 'react-intersection-observer';
-import classnames from 'classnames';
+import React, { FC, useState, useEffect, useCallback, useMemo } from "react";
+import { useInView } from "react-intersection-observer";
+import classnames from "classnames";
 
-import { GO_BOOL } from '@/utils/types';
-import { Size } from '@/utils/types/waterfall_size';
-import { UserCard } from '@/utils/types/UserCard';
+import { GO_BOOL } from "@/utils/types";
+import { Size } from "@/utils/types/waterfall_size";
+import { UserCard } from "@/utils/types/UserCard";
 
-import './index.scss';
+import "./index.scss";
 
 interface WaterFallListItemProps {
   data: UserCard.Item;
@@ -17,13 +17,8 @@ interface WaterFallListItemProps {
   size: Size;
 }
 type WaterFallListItem = FC<WaterFallListItemProps>;
-const WaterFallListItem: WaterFallListItem = ({
-  data,
-  className = '',
-  onResize,
-  size,
-}) => {
-  const [avast, setAvast] = useState('');
+const WaterFallListItem: WaterFallListItem = ({ data, className = "", onResize, size }) => {
+  const [avast, setAvast] = useState("");
   const [ref, inView] = useInView();
   const [forceSize, setForceSize] = useState<Size | null>(null);
 
@@ -54,10 +49,7 @@ const WaterFallListItem: WaterFallListItem = ({
 
   /** 图片加载错误fallback */
   const errorHandle = useCallback(() => {
-    const errmsg = avast.replace(
-      /^(.+\/)(.+)(\.)(.+)$/,
-      `图片加载失败：$2 - $4\n$2$3$4`,
-    );
+    const errmsg = avast.replace(/^(.+\/)(.+)(\.)(.+)$/, `图片加载失败：$2 - $4\n$2$3$4`);
     console.warn(errmsg);
     onResize && onResize();
   }, [avast, onResize]);
@@ -76,27 +68,27 @@ const WaterFallListItem: WaterFallListItem = ({
       })}
       ref={ref}
     >
-      <div className='com_waterfall_item_avast'>
+      <div className="com_waterfall_item_avast">
         <img
           src={avast}
           onLoad={imgLoadedHandle}
           onError={errorHandle}
           onClick={avastClickHandle}
-          referrerPolicy='no-referrer'
+          referrerPolicy="no-referrer"
         />
       </div>
-      <div className='com_waterfall_item_text_meta'>
-        <div className='com_waterfall_item_text_nickname'>
+      <div className="com_waterfall_item_text_meta">
+        <div className="com_waterfall_item_text_nickname">
           {data.nickname}
           {data.retired === GO_BOOL.yes ? (
-            <div className='retiredTag' title='荣誉退休'>
+            <div className="retiredTag" title="荣誉退休">
               休
             </div>
           ) : null}
         </div>
-        <div className='com_waterfall_item_text_job'>{data.job}</div>
+        <div className="com_waterfall_item_text_job">{data.job}</div>
       </div>
-      <div className='com_waterfall_item_bio'>{data.bio}</div>
+      <div className="com_waterfall_item_bio">{data.bio}</div>
     </div>
   );
 };

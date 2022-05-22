@@ -1,4 +1,4 @@
-import { AxiosResponse } from 'axios';
+import { AxiosResponse } from "axios";
 
 export namespace ResponseData {
   export interface DataContent extends Record<string, any> {}

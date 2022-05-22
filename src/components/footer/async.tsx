@@ -1,8 +1,8 @@
-import Loadable from 'react-loadable';
+import Loadable from "react-loadable";
 
-import { Null } from '@/components/Null';
+import { Null } from "@/components/Null";
 
 export default Loadable({
-  loader: () => import('.').catch(() => Null),
+  loader: () => import(".").catch(() => Null),
   loading: Null,
 });

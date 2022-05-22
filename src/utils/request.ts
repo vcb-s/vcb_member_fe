@@ -1,12 +1,12 @@
-import axios, { Method } from 'axios';
+import axios, { Method } from "axios";
 
-import { PaginationParam } from './types/Pagination';
-import { ResponseData } from './types/ResponseData';
-import { UserCard } from './types/UserCard';
-import { Group } from './types/Group';
+import { PaginationParam } from "./types/Pagination";
+import { ResponseData } from "./types/ResponseData";
+import { UserCard } from "./types/UserCard";
+import { Group } from "./types/Group";
 
 const axiosInstance = axios.create({
-  baseURL: '/vcbs_member_api',
+  baseURL: "/vcbs_member_api",
   withCredentials: false,
 });
 
@@ -16,16 +16,16 @@ interface FetchParam {
   data?: any;
 }
 export const ajax = (param: FetchParam) => {
-  const { url, method = 'GET', data } = param;
+  const { url, method = "GET", data } = param;
   switch (method.toUpperCase()) {
-    case 'GET': {
+    case "GET": {
       return axiosInstance({ url, params: data, method });
     }
-    case 'POST': {
+    case "POST": {
       return axiosInstance({ url, data, method });
     }
     default: {
-      return axiosInstance({ url, params: data, method: 'GET' });
+      return axiosInstance({ url, params: data, method: "GET" });
     }
   }
 };
@@ -33,16 +33,16 @@ export const ajax = (param: FetchParam) => {
 namespace request {
   export namespace userCard {
     export interface ReadParam extends Partial<PaginationParam> {
-      group?: Group.Item['id'];
-      retired?: UserCard.Item['retired'];
-      IDS?: UserCard.Item['id'][];
+      group?: Group.Item["id"];
+      retired?: UserCard.Item["retired"];
+      IDS?: UserCard.Item["id"][];
     }
     export interface ReadResponse
       extends ResponseData.OK<{
         res: UserCard.ItemInResponse[];
         total: number;
       }> {}
-    export const url = '/user-card/list';
+    export const url = "/user-card/list";
     export const read = (data: ReadParam): Promise<ReadResponse> => {
       return ajax({
         url,
@@ -51,7 +51,7 @@ namespace request {
     };
   }
   export namespace group {
-    export const url = '/group/list';
+    export const url = "/group/list";
     export interface ReadResponse
       extends ResponseData.OK<{
         res: Group.ItemInResponse[];
@@ -63,20 +63,15 @@ namespace request {
   }
 }
 
-export const strictCheck = <
-  D extends ResponseData.DataContent,
-  T extends ResponseData.OK<D>
->(
-  response: T,
+export const strictCheck = <D extends ResponseData.DataContent, T extends ResponseData.OK<D>>(
+  response: T
 ): T => {
   if (response.status !== 200) {
-    throw new Error(
-      `请求状态异常： ${response.status}, ${response.statusText}`,
-    );
+    throw new Error(`请求状态异常： ${response.status}, ${response.statusText}`);
   }
 
   if (response.data.code !== 200) {
-    throw new Error(`请求错误：${response.data.msg || '未知错误'}`);
+    throw new Error(`请求错误：${response.data.msg || "未知错误"}`);
   }
 
   return response;
