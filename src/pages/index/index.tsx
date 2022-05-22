@@ -1,7 +1,7 @@
 import { useHistory, useLocation } from "umi";
 import { stringify } from "querystring";
 
-import WaterFall from "@/components/waterfall/async";
+import WaterFall from "@/components/waterfall";
 import Footer from "@/components/footer/async";
 import Loading from "@/components/loading";
 import GroupSelect from "@/components/group_select/async";

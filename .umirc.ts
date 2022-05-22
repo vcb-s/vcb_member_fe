@@ -66,7 +66,7 @@ export default defineConfig({
     chain.plugin("unplugin-auto-import").use(
       AutoImportPlugin({
         /* options */
-        dts: "./src/auto-imports.d.ts",
+        dts: "./src/@types/auto-imports.d.ts",
         eslintrc: {
           enabled: true,
           filepath: "./.eslintrc-auto-import.json",
@@ -74,7 +74,7 @@ export default defineConfig({
         },
         sourceMap: true,
 
-        imports: ["react"],
+        imports: ["react", "react-router-dom"],
         resolvers: [
           IconsResolver({
             prefix: "Icon",
