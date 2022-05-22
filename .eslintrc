@@ -1,7 +1,7 @@
 {
   "parser": "@typescript-eslint/parser",
   "plugins": ["@typescript-eslint", "react-hooks"],
-  "extends": ["plugin:react-hooks/recommended"],
+  "extends": ["plugin:react-hooks/recommended", ".eslintrc-auto-import.json"],
   "parserOptions": {
     "sourceType": "module",
     "project": ["./tsconfig.json"]

@@ -1,0 +1,24 @@
+{
+  "globals": {
+    "createRef": "readonly",
+    "forwardRef": "readonly",
+    "lazy": "readonly",
+    "memo": "readonly",
+    "startTransition": "readonly",
+    "useCallback": "readonly",
+    "useContext": "readonly",
+    "useDebugValue": "readonly",
+    "useDeferredValue": "readonly",
+    "useEffect": "readonly",
+    "useId": "readonly",
+    "useImperativeHandle": "readonly",
+    "useInsertionEffect": "readonly",
+    "useLayoutEffect": "readonly",
+    "useMemo": "readonly",
+    "useReducer": "readonly",
+    "useRef": "readonly",
+    "useState": "readonly",
+    "useSyncExternalStore": "readonly",
+    "useTransition": "readonly"
+  }
+}

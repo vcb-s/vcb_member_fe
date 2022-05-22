@@ -1,1 +1,1 @@
-declare module '*.toml'
+declare module "*.toml";

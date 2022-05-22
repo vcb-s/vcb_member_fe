@@ -1,4 +1,7 @@
 import { defineConfig } from "umi";
+import AutoImportPlugin from "unplugin-auto-import/webpack";
+import IconsResolver from "unplugin-icons/resolver";
+import Icons from "unplugin-icons/webpack";
 
 const { PROXY_TARGET = "https://vcb-s.com" } = process.env;
 
@@ -58,7 +61,30 @@ export default defineConfig({
 
   webpack5: {},
 
-  chainWebpack: (config) => {
-    return config;
+  chainWebpack: (chain) => {
+    /** unplugin */
+    chain.plugin("unplugin-auto-import").use(
+      AutoImportPlugin({
+        /* options */
+        dts: "./src/auto-imports.d.ts",
+        eslintrc: {
+          enabled: true,
+          filepath: "./.eslintrc-auto-import.json",
+          globalsPropValue: "readonly",
+        },
+        sourceMap: true,
+
+        imports: ["react"],
+        resolvers: [
+          IconsResolver({
+            prefix: "Icon",
+            extension: "jsx",
+          }),
+        ],
+      })
+    );
+    chain.plugin("unplugin-icons").use(Icons({ scale: 1, compiler: "jsx" }));
+
+    return chain;
   },
 });
