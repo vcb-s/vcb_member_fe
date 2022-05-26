@@ -1,7 +1,7 @@
 import { CommonList } from "./CommonList";
 export namespace Group {
   export interface ItemInResponse {
-    id: string;
+    id: number;
     name: string;
   }
   export interface Item extends ItemInResponse {

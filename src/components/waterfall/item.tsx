@@ -1,6 +1,5 @@
-import React, { FC, useState, useEffect, useCallback, useMemo } from "react";
+import { FC } from "react";
 import { useInView } from "react-intersection-observer";
-import classnames from "classnames";
 
 import { GO_BOOL } from "@/utils/types";
 import { Size } from "@/utils/types/waterfall_size";

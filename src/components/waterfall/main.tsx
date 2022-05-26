@@ -15,7 +15,7 @@ interface Props {
   size?: Size;
 }
 
-export default memo(function WaterFallList({ data, size: sizeFromProps }: Props) {
+export default memo(function WaterFall({ data, size: sizeFromProps }: Props) {
   const isWide = useMedia("(min-width: 1080px)");
   /** 混合判断逻辑后的size取值 */
   const size = useMemo(() => {

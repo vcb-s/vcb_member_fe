@@ -1,57 +1,63 @@
-import { useHistory, useLocation } from "umi";
-import { stringify } from "querystring";
-
+import { useQuery } from "@/hooks/useQuery";
 import WaterFall from "@/components/waterfall";
 import Footer from "@/components/footer/async";
 import Loading from "@/components/loading";
-import GroupSelect from "@/components/group_select/async";
+import GroupSelect from "@/components/group_select";
 import { useCards } from "@/utils/services";
 
 import "./index.scss";
+import { Empty } from "@/components/Empty";
 
 type PageParam = {
   group?: string;
 };
 
-export default memo(function IndexPage() {
-  const history = useHistory();
-  const location = useLocation();
-  // @ts-ignore
-  const params: PageParam = location.query;
+function useParamsGroup(): number | undefined {
+  const group = useQuery<PageParam>().group;
 
-  const navToGroup = useCallback(
-    (groupID: string) => {
-      history.push({
-        pathname: history.location.pathname,
-        search: stringify({
-          ...params,
-          group: groupID,
-        }),
+  if (group) {
+    return +group;
+  }
+
+  return undefined;
+}
+
+export default memo(() => {
+  const history = useHistory();
+  const group = useParamsGroup();
+  const [cardList, , loading] = useCards({ group });
+
+  const onChange = useCallback(
+    (nextGroup: number) => {
+      history.replace({
+        ...history.location,
+        search: stringify({ group: nextGroup }),
       });
     },
-    [history, params]
+    [history]
   );
 
   useEffect(() => {
-    if (!params.group) {
-      navToGroup("1");
+    if (!group) {
+      onChange(1);
     }
-  }, [navToGroup, params.group]);
-
-  const [cardList, , loading] = useCards({ group: params.group || "" });
+  }, [onChange, group]);
 
   return (
     <div className="modules_member_index">
-      <div className="modules_member_index_title">VCB-Studio 社员一览</div>
+      <div className="modules_member_index_title">VCB-Studio 组员风采</div>
 
-      <Loading show={loading} />
+      <Suspense fallback={<Empty />}>
+        <GroupSelect current={group} onChange={onChange} />
 
-      <GroupSelect current={params.group || ""} onChange={navToGroup} />
+        <div style={{ height: "20px" }} />
 
-      <div style={{ height: "20px" }} />
+        <Loading show={loading} />
 
-      <WaterFall data={cardList} />
-      <Footer />
+        <WaterFall data={cardList} />
+
+        <Footer />
+      </Suspense>
     </div>
   );
 });

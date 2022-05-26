@@ -1,4 +1,3 @@
-import { useEffect, useMemo } from "react";
 import { useAsyncFn } from "react-use";
 
 import { webpDetect } from "@/utils/webpDetect";
@@ -12,7 +11,7 @@ export type Loading = boolean;
 const groupAdapeter = (group: Group.ItemInResponse): Group.Item => {
   return {
     ...group,
-    key: group.id,
+    key: `${group.id}`,
   };
 };
 
@@ -39,7 +38,7 @@ export const useGroup = function (): [Group.Item[], LoadFail, Loading] {
 
     return [
       ...(value?.data.data.res.map(groupAdapeter) || []),
-      { key: "-1", id: "-1", name: "一家人就要齐齐整整" },
+      { key: "-1", id: -1, name: "一家人就要齐齐整整" },
     ];
   }, [value, error]);
 
@@ -79,7 +78,7 @@ export const useCards = function ({
   group,
   IDS,
 }: {
-  group?: request.userCard.ReadParam["group"];
+  group?: request.userCard.ReadParam["group"] | undefined;
   IDS?: NonNullable<request.userCard.ReadParam["IDS"]>;
 }): [UserCard.Item[], LoadFail, Loading] {
   const [{ value: userCards, error: userCardsError, loading }, fetch] = useAsyncFn(async () => {
@@ -87,8 +86,10 @@ export const useCards = function ({
   }, [group, IDS]);
 
   useEffect(() => {
-    fetch();
-  }, [fetch]);
+    if (group) {
+      fetch();
+    }
+  }, [fetch, group]);
 
   /** 校验错误 */
   const error = useMemo((): LoadFail => {

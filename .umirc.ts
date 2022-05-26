@@ -74,7 +74,14 @@ export default defineConfig({
         },
         sourceMap: true,
 
-        imports: ["react", "react-router-dom"],
+        imports: [
+          "react",
+          "react-router-dom",
+          { umi: [["useHistory", "useHistory"]] },
+          { react: [["Suspense", "Suspense"]] },
+          { classnames: [["default", "classnames"]] },
+          { querystring: [["stringify", "stringify"]] },
+        ],
         resolvers: [
           IconsResolver({
             prefix: "Icon",

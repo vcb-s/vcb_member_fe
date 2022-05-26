@@ -1,4 +1,4 @@
-import React, { FC, useState, memo } from "react";
+import { FC } from "react";
 
 import "./index.scss";
 

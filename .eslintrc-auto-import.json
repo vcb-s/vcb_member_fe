@@ -1,5 +1,6 @@
 {
   "globals": {
+    "classnames": "readonly",
     "createRef": "readonly",
     "forwardRef": "readonly",
     "lazy": "readonly",
@@ -11,11 +12,14 @@
     "Route": "readonly",
     "Routes": "readonly",
     "startTransition": "readonly",
+    "stringify": "readonly",
+    "Suspense": "readonly",
     "useCallback": "readonly",
     "useContext": "readonly",
     "useDebugValue": "readonly",
     "useDeferredValue": "readonly",
     "useEffect": "readonly",
+    "useHistory": "readonly",
     "useHref": "readonly",
     "useId": "readonly",
     "useImperativeHandle": "readonly",
