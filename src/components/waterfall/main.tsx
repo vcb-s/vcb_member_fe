@@ -30,13 +30,13 @@ export default memo(function WaterFall({ data, size: sizeFromProps }: Props) {
     return Size.normal;
   }, [isWide, sizeFromProps]);
 
-  const [masonryNodeRef, { layout: relayoutHandle }] = useMasonry<HTMLDivElement>();
+  const [masonryNodeRef, { layout }] = useMasonry<HTMLDivElement>();
 
   return (
     <div className="com_waterfall_container">
       <div className="com_waterfall_list" ref={masonryNodeRef}>
         {data.map((item) => (
-          <WaterFallListItem key={item.id} data={item} onResize={relayoutHandle} size={size} />
+          <WaterFallListItem key={item.id} data={item} onResize={layout} size={size} />
         ))}
       </div>
     </div>
