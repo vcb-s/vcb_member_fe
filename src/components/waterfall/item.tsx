@@ -49,7 +49,7 @@ const WaterFallListItem: WaterFallListItem = ({ data, className = "", onResize, 
   /** 图片加载错误fallback */
   const errorHandle = useCallback(() => {
     const errmsg = avast.replace(/^(.+\/)(.+)(\.)(.+)$/, `图片加载失败：$2 - $4\n$2$3$4`);
-    console.warn(errmsg);
+    errmsg && console.warn(errmsg);
     onResize && onResize();
   }, [avast, onResize]);
 
