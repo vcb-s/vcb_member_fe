@@ -10,6 +10,7 @@ const __DEV__ = process.env.NODE_ENV === "development";
 export default defineConfig({
   title: "vcb-s成员介绍",
   base: "/vcbs_member/",
+  publicPath: "/vcbs_member/",
 
   hash: true,
   dynamicImport: {},
@@ -54,7 +55,7 @@ export default defineConfig({
         /** @link https://caniuse.com/es6-module-dynamic-import */
         chrome: 63,
         firefox: 67,
-        safari: 11.1,
+        safari: 12,
         edge: 79,
         ios: 11,
       },
