@@ -2,7 +2,7 @@ import { useQuery } from "@/hooks/useQuery";
 import WaterFall from "@/components/waterfall";
 import Footer from "@/components/footer/async";
 import Loading from "@/components/loading";
-import GroupSelect from "@/components/group_select";
+import GroupSelect from "@/components/GroupSelect";
 import { useCards } from "@/utils/services";
 
 import "./index.scss";
