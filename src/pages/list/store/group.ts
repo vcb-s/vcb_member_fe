@@ -35,6 +35,8 @@ export const useGroupStore = create<State>()(
 
       const list = res.map(groupAdapeter);
 
+      list.push({ key: "-1", id: -1, name: "一家人就要齐齐整整" });
+
       set((s) => {
         s.group.res = list;
         s.group.total = total;
