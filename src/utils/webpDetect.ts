@@ -1,11 +1,20 @@
-const webpDetect: Promise<boolean> = new Promise((resolve) => {
+let isSupport: boolean;
+
+const webpDetect = new Promise<boolean>((resolve) => {
+  if (isSupport !== undefined) {
+    resolve(isSupport);
+    return;
+  }
+
   let image = new Image();
   image.onload = image.onerror = () => {
     if (image.height === 1) {
-      resolve(true);
+      isSupport = true;
     } else {
-      resolve(false);
+      isSupport = false;
     }
+
+    resolve(isSupport);
   };
   image.src =
     "data:image/webp;base64,UklGRkoAAABXRUJQVlA4WAoAAAAQAAAAAAAAAAAAQUxQSAwAAAARBxAR/Q9ERP8DAABWUDggGAAAABQBAJ0BKgEAAQAAAP4AAA3AAP7mtQAAAA==";

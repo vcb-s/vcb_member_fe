@@ -1,6 +1,6 @@
 import { Chip } from "@material-ui/core";
 import { Group } from "@/utils/types/Group";
-import { useGroup } from "@/utils/services";
+import { useGroupStore } from "@/pages/list/store/group";
 
 import styles from "./index.scss";
 
@@ -9,7 +9,11 @@ interface Props {
   onChange: (id: Group.Item["id"]) => void;
 }
 export default memo(function GroupSelect({ current, onChange }: Props) {
-  const [groups] = useGroup();
+  const groups = useGroupStore(useCallback((s) => s.group.res, []));
+  const fetch = useGroupStore(useCallback((s) => s.fetch, []));
+  useEffect(() => {
+    fetch();
+  }, [fetch]);
 
   return (
     <>
